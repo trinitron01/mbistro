@@ -1,11 +1,10 @@
-package com.bfs.mbistro.module.restaurant.list;
+package com.bfs.mbistro.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
-public class RestaurantsResponse {
+public class Restaurants {
 
     @SerializedName("results_found")
     @Expose

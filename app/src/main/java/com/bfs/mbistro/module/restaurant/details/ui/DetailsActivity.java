@@ -1,10 +1,5 @@
 package com.bfs.mbistro.module.restaurant.details.ui;
 
-import com.bfs.mbistro.R;
-import com.bfs.mbistro.base.BaseActivity;
-import com.bfs.mbistro.module.restaurant.details.RestaurantDetails;
-import com.bfs.mbistro.module.restaurant.list.Restaurant;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +8,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-
+import com.bfs.mbistro.R;
+import com.bfs.mbistro.base.BaseActivity;
+import com.bfs.mbistro.model.Restaurant;
+import com.bfs.mbistro.model.RestaurantDetails;
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -30,6 +28,9 @@ public class DetailsActivity extends BaseActivity {
         context.startActivity(starter);
     }
 
+  /**
+   * cl
+   */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,9 +1,7 @@
 package com.bfs.mbistro.crashreporting;
 
-import com.crashlytics.android.Crashlytics;
-
 import android.content.Context;
-
+import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
 public class FabricReportingEngine implements CrashReportingEngine {
@@ -18,4 +16,9 @@ public class FabricReportingEngine implements CrashReportingEngine {
     public void registerCrashReporting() {
         Fabric.with(context, new Crashlytics());
     }
+
+  @Override public void logError(Throwable error) {
+    Crashlytics.logException(error);
+  }
+
 }

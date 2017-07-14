@@ -1,4 +1,4 @@
-package com.bfs.mbistro.base.model;
+package com.bfs.mbistro.model.base;
 
 public interface NamedItem {
 

@@ -1,13 +1,21 @@
-package com.bfs.mbistro.module.restaurant.details;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Location implements Parcelable {
 
+  public static final Creator<Location> CREATOR = new Creator<Location>() {
+    @Override public Location createFromParcel(Parcel in) {
+      return new Location(in);
+    }
+
+    @Override public Location[] newArray(int size) {
+      return new Location[size];
+    }
+  };
     @SerializedName("address")
     @Expose
     private String address;
@@ -111,16 +119,4 @@ public class Location implements Parcelable {
         dest.writeString(zipcode);
         dest.writeString(countryId);
     }
-
-    public static final Creator<Location> CREATOR = new Creator<Location>() {
-        @Override
-        public Location createFromParcel(Parcel in) {
-            return new Location(in);
-        }
-
-        @Override
-        public Location[] newArray(int size) {
-            return new Location[size];
-        }
-    };
 }

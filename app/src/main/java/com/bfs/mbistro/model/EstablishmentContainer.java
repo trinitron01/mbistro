@@ -1,4 +1,4 @@
-package com.bfs.mbistro.module.establishment;
+package com.bfs.mbistro.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

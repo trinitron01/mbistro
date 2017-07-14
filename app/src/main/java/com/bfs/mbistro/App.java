@@ -1,12 +1,12 @@
 package com.bfs.mbistro;
 
+import android.app.Application;
 import com.bfs.mbistro.di.AppModule;
 import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.di.BistroServiceModule;
 import com.bfs.mbistro.di.DaggerBistroComponent;
 import com.bfs.mbistro.network.AndroidNetworkMonitor;
-
-import android.app.Application;
+import java.io.File;
 
 public class App extends Application {
 
@@ -16,8 +16,12 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+      File externalCacheDir = getExternalCacheDir();
+      File cacheDir = externalCacheDir != null ? externalCacheDir : getCacheDir();
         component = DaggerBistroComponent.builder()
-                .bistroServiceModule(new BistroServiceModule(BASE_URL, getExternalCacheDir(), new AndroidNetworkMonitor(this))).appModule(new AppModule(this))
+            .bistroServiceModule(
+                new BistroServiceModule(BASE_URL, cacheDir, new AndroidNetworkMonitor(this)))
+            .appModule(new AppModule(this))
                 .build();
     }
 

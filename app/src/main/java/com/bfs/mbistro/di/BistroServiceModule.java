@@ -1,18 +1,14 @@
 package com.bfs.mbistro.di;
 
-import com.google.gson.GsonBuilder;
-
 import com.bfs.mbistro.network.ApiService;
 import com.bfs.mbistro.network.NetworkMonitor;
-
+import com.google.gson.GsonBuilder;
+import dagger.Module;
+import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
 import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -26,10 +22,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class BistroServiceModule {
 
+    private static final int RESPONSE_CACHE_SIZE = 10 * 1024 * 1024;
     private final String baseUrl;
     private final File cacheDir;
     private final NetworkMonitor networkMonitor;
-    private boolean useCache = false;
+    private final boolean useCache = true;
 
     public BistroServiceModule(String baseUrl, File cacheDir, NetworkMonitor networkMonitor) {
         this.baseUrl = baseUrl;
@@ -47,8 +44,10 @@ public class BistroServiceModule {
     @Singleton
     OkHttpClient provideOkHttpClient() {
 
-        return new OkHttpClient.Builder().addNetworkInterceptor(new NetworkInterceptor()).addInterceptor(new OfflineInterceptor())
-                .cache(new Cache(cacheDir, 10 * 1024 * 1024)).build();
+        return new OkHttpClient.Builder().addNetworkInterceptor(new NetworkInterceptor())
+            .cache(new Cache(cacheDir, RESPONSE_CACHE_SIZE))
+            .addInterceptor(new OfflineInterceptor())
+            .build();
 
     }
 

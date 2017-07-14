@@ -1,18 +1,23 @@
-package com.bfs.mbistro.module.restaurant.list;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import com.bfs.mbistro.base.model.NamedItem;
-import com.bfs.mbistro.module.restaurant.details.UserRating;
+package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import com.bfs.mbistro.model.base.NamedItem;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Restaurant implements Parcelable, NamedItem {
 
+  public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
+    @Override public Restaurant createFromParcel(Parcel in) {
+      return new Restaurant(in);
+    }
+
+    @Override public Restaurant[] newArray(int size) {
+      return new Restaurant[size];
+    }
+  };
     @SerializedName("id")
     @Expose
     public String id;
@@ -22,9 +27,8 @@ public class Restaurant implements Parcelable, NamedItem {
     @SerializedName("url")
     @Expose
     public String url;
-    @SerializedName("location")
-    @Expose
-    public Location location;
+    @SerializedName("location") @Expose public com.bfs.mbistro.module.restaurant.list.Location
+        location;
     @SerializedName("switch_to_order_menu")
     @Expose
     public Integer switchToOrderMenu;
@@ -131,17 +135,5 @@ public class Restaurant implements Parcelable, NamedItem {
     public String getId() {
         return id;
     }
-
-    public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
-        @Override
-        public Restaurant createFromParcel(Parcel in) {
-            return new Restaurant(in);
-        }
-
-        @Override
-        public Restaurant[] newArray(int size) {
-            return new Restaurant[size];
-        }
-    };
 
 }

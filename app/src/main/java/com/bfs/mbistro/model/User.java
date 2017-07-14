@@ -1,13 +1,21 @@
-package com.bfs.mbistro.module.restaurant.details;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class User implements Parcelable {
 
+  public static final Creator<User> CREATOR = new Creator<User>() {
+    @Override public User createFromParcel(Parcel in) {
+      return new User(in);
+    }
+
+    @Override public User[] newArray(int size) {
+      return new User[size];
+    }
+  };
     @SerializedName("name")
     @Expose
     private String name;
@@ -68,16 +76,4 @@ public class User implements Parcelable {
         dest.writeString(profileDeeplink);
         dest.writeString(profileImage);
     }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 }

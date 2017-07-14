@@ -1,13 +1,21 @@
-package com.bfs.mbistro.module.restaurant.details;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class AllReview implements Parcelable {
 
+  public static final Creator<AllReview> CREATOR = new Creator<AllReview>() {
+    @Override public AllReview createFromParcel(Parcel in) {
+      return new AllReview(in);
+    }
+
+    @Override public AllReview[] newArray(int size) {
+      return new AllReview[size];
+    }
+  };
     @SerializedName("rating")
     @Expose
     private String rating;
@@ -39,7 +47,7 @@ public class AllReview implements Parcelable {
     @Expose
     private String commentsCount;
 
-    protected AllReview(Parcel in) {
+  private AllReview(Parcel in) {
         rating = in.readString();
         reviewText = in.readString();
         id = in.readString();
@@ -82,10 +90,6 @@ public class AllReview implements Parcelable {
 
     public void setRatingColor(String ratingColor) {
         this.ratingColor = ratingColor;
-    }
-
-    public String getReviewTimeFriendly() {
-        return reviewTimeFriendly;
     }
 
     public void setReviewTimeFriendly(String reviewTimeFriendly) {
@@ -150,16 +154,4 @@ public class AllReview implements Parcelable {
         dest.writeParcelable(user, flags);
         dest.writeString(commentsCount);
     }
-
-    public static final Creator<AllReview> CREATOR = new Creator<AllReview>() {
-        @Override
-        public AllReview createFromParcel(Parcel in) {
-            return new AllReview(in);
-        }
-
-        @Override
-        public AllReview[] newArray(int size) {
-            return new AllReview[size];
-        }
-    };
 }

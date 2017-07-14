@@ -1,13 +1,21 @@
-package com.bfs.mbistro.module.restaurant.details;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class UserRating implements Parcelable {
 
+  public static final Creator<UserRating> CREATOR = new Creator<UserRating>() {
+    @Override public UserRating createFromParcel(Parcel in) {
+      return new UserRating(in);
+    }
+
+    @Override public UserRating[] newArray(int size) {
+      return new UserRating[size];
+    }
+  };
     @SerializedName("aggregate_rating")
     @Expose
     private String aggregateRating;
@@ -46,16 +54,4 @@ public class UserRating implements Parcelable {
         return "UserRating{" + "aggregateRating='" + aggregateRating + '\'' + ", ratingText='" + ratingText + '\'' + ", ratingColor='" + ratingColor + '\''
                 + ", votes='" + votes + '\'' + '}';
     }
-
-    public static final Creator<UserRating> CREATOR = new Creator<UserRating>() {
-        @Override
-        public UserRating createFromParcel(Parcel in) {
-            return new UserRating(in);
-        }
-
-        @Override
-        public UserRating[] newArray(int size) {
-            return new UserRating[size];
-        }
-    };
 }

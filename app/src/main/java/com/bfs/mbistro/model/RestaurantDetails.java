@@ -1,15 +1,22 @@
-package com.bfs.mbistro.module.restaurant.details;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class RestaurantDetails implements Parcelable {
 
+  public static final Creator<RestaurantDetails> CREATOR = new Creator<RestaurantDetails>() {
+    @Override public RestaurantDetails createFromParcel(Parcel in) {
+      return new RestaurantDetails(in);
+    }
+
+    @Override public RestaurantDetails[] newArray(int size) {
+      return new RestaurantDetails[size];
+    }
+  };
     @SerializedName("id")
     @Expose
     private String id;
@@ -146,16 +153,4 @@ public class RestaurantDetails implements Parcelable {
         dest.writeString(phoneNumbers);
         dest.writeTypedList(allReviews);
     }
-
-    public static final Creator<RestaurantDetails> CREATOR = new Creator<RestaurantDetails>() {
-        @Override
-        public RestaurantDetails createFromParcel(Parcel in) {
-            return new RestaurantDetails(in);
-        }
-
-        @Override
-        public RestaurantDetails[] newArray(int size) {
-            return new RestaurantDetails[size];
-        }
-    };
 }
