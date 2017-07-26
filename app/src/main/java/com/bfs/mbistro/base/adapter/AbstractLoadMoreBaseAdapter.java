@@ -33,6 +33,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
+import com.bfs.mbistro.base.presenter.MvpItemsView;
+import com.hannesdorfmann.mosby3.mvp.MvpView;
 import java.util.Collection;
 
 /**
@@ -43,8 +45,8 @@ import java.util.Collection;
  *
  * @param <T> The type of the elements from the adapter.
  */
-public abstract class AbstractLoadMoreBaseAdapter<T, IH extends BaseViewHolder<T>, P extends BaseListItemPresenter<T>>
-    extends AbstractBaseAdapter<T> {
+public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
+    extends AbstractBaseAdapter<T, IV, V, P> {
 
   public static final int VIEW_TYPE_ITEM = 0;
   public static final int VIEW_TYPE_LOAD = 1;
@@ -83,16 +85,16 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IH extends BaseViewHolder<T
     mResLoading = resLoading;
   }
 
-  @Override public BaseViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
+  @Override public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
     if (viewType == VIEW_TYPE_LOAD && hasLoadingLayout()) {
-      return new BaseViewHolder<>(
+      return new BaseViewHolder(
           LayoutInflater.from(parent.getContext()).inflate(mResLoading, parent, false));
     } else if (viewType == VIEW_TYPE_EMPTY) {
-      return new BaseViewHolder<>(LayoutInflater.from(parent.getContext())
+      return new BaseViewHolder(LayoutInflater.from(parent.getContext())
           .inflate(R.layout.empty_list_view, parent, false));
     } else {
-      final BaseViewHolder<T> baseViewHolder = createItemHolder(parent);
+      final BaseViewHolder baseViewHolder = createItemHolder(parent);
       if (mOnChildCLickListener != null) {
         baseViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(View v) {
@@ -105,9 +107,9 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IH extends BaseViewHolder<T
     }
   }
 
-  @NonNull protected abstract IH createItemHolder(ViewGroup parent);
+  @NonNull protected abstract BaseViewHolder createItemHolder(ViewGroup parent);
 
-  @Override public void onBindViewHolder(BaseViewHolder<T> holder, int position) {
+  @Override public final void onBindViewHolder(BaseViewHolder holder, int position) {
     if (position >= getItemCount() - 1
         && moreDataAvailable
         && !mIsLoading
@@ -118,11 +120,10 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IH extends BaseViewHolder<T
 
     if (getItemViewType(position) == VIEW_TYPE_ITEM) {
       //noinspection unchecked
-      bindItem((IH) holder, position);
+      bindRowDataItem(position, (IV) holder);
     }
   }
 
-  protected abstract void bindItem(IH holder, int position);
 
   @Override @ViewType public int getItemViewType(int position) {
     if (isDataEmpty()) {
@@ -206,6 +207,11 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IH extends BaseViewHolder<T
    */
   private boolean hasLoadingLayout() {
     return mResLoading != INVALID_RESOURCE_ID;
+  }
+
+  public void onDataChanged() {
+    notifyDataSetChanged();
+    mIsLoading = false;
   }
 
   @IntDef({ VIEW_TYPE_ITEM, VIEW_TYPE_LOAD, VIEW_TYPE_EMPTY }) @interface ViewType {

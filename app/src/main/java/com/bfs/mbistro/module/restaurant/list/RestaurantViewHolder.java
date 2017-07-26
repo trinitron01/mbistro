@@ -5,8 +5,7 @@ import android.widget.TextView;
 import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.model.RestaurantContainer;
 
-public class RestaurantViewHolder extends BaseViewHolder<RestaurantContainer>
-    implements RestaurantRowView {
+public class RestaurantViewHolder extends BaseViewHolder implements RestaurantRowView {
 
   private final TextView tv;
 
@@ -15,7 +14,7 @@ public class RestaurantViewHolder extends BaseViewHolder<RestaurantContainer>
     tv = (TextView) itemView.findViewById(android.R.id.text1);
   }
 
-  @Override public void showRestaurantInfo(RestaurantContainer item) {
+  @Override public void showRestaurantRow(RestaurantContainer item) {
     tv.setText(item.getName());
   }
 }

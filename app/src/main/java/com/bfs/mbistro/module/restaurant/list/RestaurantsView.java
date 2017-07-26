@@ -1,7 +1,7 @@
 package com.bfs.mbistro.module.restaurant.list;
 
-import com.hannesdorfmann.mosby3.mvp.MvpView;
+import com.bfs.mbistro.base.presenter.MvpItemsView;
 
-interface RestaurantsView extends MvpView {
-  void showRestaurants();
+public interface RestaurantsView extends MvpItemsView {
+
 }

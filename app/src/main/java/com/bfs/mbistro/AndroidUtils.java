@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -221,5 +222,18 @@ public class AndroidUtils {
       }
     }
     return false;
+  }
+
+  /**
+   * Shows a {@link Snackbar}.
+   *
+   * @param mainTextStringId The id for the string resource for the Snackbar text.
+   * @param actionStringId The text of the action item.
+   * @param listener The listener associated with the Snackbar action.
+   */
+  public static void showSnackbar(Activity activity, final int mainTextStringId,
+      final int actionStringId, View.OnClickListener listener) {
+    Snackbar.make(activity.findViewById(android.R.id.content), activity.getString(mainTextStringId),
+        Snackbar.LENGTH_INDEFINITE).setAction(activity.getString(actionStringId), listener).show();
   }
 }

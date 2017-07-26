@@ -21,7 +21,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-
+    <fragment
+        class="com.bfs.mbistro.module.restaurant.list.RestaurantsFragment"
+        android:id="@+id/restaurants_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>

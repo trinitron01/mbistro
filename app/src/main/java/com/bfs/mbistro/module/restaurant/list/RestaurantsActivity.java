@@ -12,18 +12,13 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import com.bfs.mbistro.AndroidUtils;
 import com.bfs.mbistro.BuildConfig;
-import com.bfs.mbistro.CollectionUtils;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.BaseActivity;
-import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
 import com.bfs.mbistro.di.BistroComponent;
-import com.bfs.mbistro.model.RestaurantContainer;
-import com.bfs.mbistro.model.Restaurants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,64 +31,26 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.places.Places;
-import java.util.ArrayList;
-import java.util.List;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
-public class RestaurantsActivity extends BaseActivity implements OnLoadMoreListener {
+public class RestaurantsActivity extends BaseActivity {
 
   public static final int REQUEST_LOCATION = 10002;
   private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 111;
-  private static final String PL = "pl";
-  private static final String LIST_KEY = "LIST_KEY";
-  private RestaurantLineAdapter restaurantAdapter;
-  private int resultsShown;
-  private int resultsStart;
+
   private GoogleApiClient googleApiClient;
   private FusedLocationProviderClient fusedLocationClient;
   private Location lastLocation;
-  private PaginatedList<RestaurantContainer> paginatedList;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_list);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-    recyclerView.setLayoutManager(
-        new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-    recyclerView.setHasFixedSize(true);
-    restaurantAdapter = new RestaurantLineAdapter(R.layout.progress_indeterminate,
-        new RestaurantItemPresenter(new ArrayList<RestaurantContainer>()));
-    restaurantAdapter.setOnLoadMoreListener(this);
-    restaurantAdapter.setIsMoreDataAvailable(false);
-    recyclerView.setAdapter(restaurantAdapter);
     initGoogleClient();
-    List<RestaurantContainer> items = null;
-    if (savedInstanceState != null) {
-      paginatedList = savedInstanceState.getParcelable(LIST_KEY);
-      updateOffset(paginatedList.resultsShown, paginatedList.resultsStart);
-      items = paginatedList.newItems;
-    }
-    load(items);
   }
 
   @Override protected void inject(BistroComponent component) {
     component.inject(this);
-  }
-
-  @Override protected void onSaveInstanceState(Bundle outState) {
-    List<RestaurantContainer> restaurants = restaurantAdapter.getDataSet();
-    if (CollectionUtils.isNotNullNorEmpty(restaurants)) {
-      paginatedList = new RestaurantContainerPaginatedList(restaurants, resultsShown, resultsStart);
-      outState.putParcelable(LIST_KEY, paginatedList);
-    }
-    super.onSaveInstanceState(outState);
   }
 
   private void initGoogleClient() {
@@ -137,38 +94,6 @@ public class RestaurantsActivity extends BaseActivity implements OnLoadMoreListe
         }
       }
     });
-  }
-
-  private void updateOffset(int resultsShown, int resultsStart) {
-    this.resultsShown += resultsShown;
-    this.resultsStart = resultsStart;
-    restaurantAdapter.setIsMoreDataAvailable(resultsShown < 100 && resultsStart <= 80);
-  }
-
-  private void load(List<RestaurantContainer> cachedItems) {
-    Observable<List<RestaurantContainer>> network =
-        service.getRestaurants(264, "city", PL, resultsShown, 20)
-            .subscribeOn(Schedulers.io())
-            .map(new Func1<Restaurants, List<RestaurantContainer>>() {
-              @Override public List<RestaurantContainer> call(Restaurants restaurantsResponse) {
-                updateOffset(restaurantsResponse.resultsShown, restaurantsResponse.resultsStart);
-                return restaurantsResponse.restaurants;
-              }
-            });
-
-    Observable<List<RestaurantContainer>> callObservable;
-    if (cachedItems != null) {
-      callObservable = Observable.concat(Observable.just(cachedItems), network)
-          .first(new Func1<List<RestaurantContainer>, Boolean>() {
-            @Override public Boolean call(List<RestaurantContainer> restaurantListItems) {
-              return restaurantListItems != null;
-            }
-          });
-    } else {
-      callObservable = network;
-    }
-    callObservable.observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new PaginatedListSingleSubscriber());
   }
 
   private void requestPerms() {
@@ -274,7 +199,7 @@ public class RestaurantsActivity extends BaseActivity implements OnLoadMoreListe
         // again" prompts). Therefore, a user interface affordance is typically implemented
         // when permissions are denied. Otherwise, your app could appear unresponsive to
         // touches or interactions which have required permissions.
-        showSnackbar(R.string.permission_denied_explanation, R.string.settings,
+        AndroidUtils.showSnackbar(this, R.string.permission_denied_explanation, R.string.settings,
             new View.OnClickListener() {
               @Override public void onClick(View view) {
                 // Build intent that displays the BistroApp settings screen.
@@ -290,47 +215,10 @@ public class RestaurantsActivity extends BaseActivity implements OnLoadMoreListe
     }
   }
 
-  /**
-   * Shows a {@link Snackbar}.
-   *
-   * @param mainTextStringId The id for the string resource for the Snackbar text.
-   * @param actionStringId The text of the action item.
-   * @param listener The listener associated with the Snackbar action.
-   */
-  private void showSnackbar(final int mainTextStringId, final int actionStringId,
-      View.OnClickListener listener) {
-    Snackbar.make(findViewById(android.R.id.content), getString(mainTextStringId),
-        Snackbar.LENGTH_INDEFINITE).setAction(getString(actionStringId), listener).show();
-  }
-
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == REQUEST_LOCATION && resultCode == Activity.RESULT_OK) {
       getAddress();
-    }
-  }
-
-  @Override public void onLoadMore() {
-    load(null);
-  }
-
-  private class PaginatedListSingleSubscriber extends Subscriber<List<RestaurantContainer>> {
-
-    @Override public void onCompleted() {
-
-    }
-
-    @Override public void onError(Throwable error) {
-      Timber.e(error);//todo wywalic
-      showSnackbar(R.string.download_error, R.string.retry, new View.OnClickListener() {
-        @Override public void onClick(View v) {
-          load(null);
-        }
-      });
-    }
-
-    @Override public void onNext(List<RestaurantContainer> restaurantListItems) {
-      restaurantAdapter.addAll(restaurantListItems);
     }
   }
 }

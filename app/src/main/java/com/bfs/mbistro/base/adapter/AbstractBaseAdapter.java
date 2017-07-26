@@ -27,6 +27,8 @@ package com.bfs.mbistro.base.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
+import com.bfs.mbistro.base.presenter.MvpItemsView;
+import com.hannesdorfmann.mosby3.mvp.MvpView;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,11 +37,12 @@ import java.util.List;
  *
  * @param <T> The type of the elements from the adapter.
  */
-public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder<T>> {
+public abstract class AbstractBaseAdapter<T, IV extends MvpView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
+    extends RecyclerView.Adapter<BaseViewHolder> {
 
-  private final BaseListItemPresenter<T> itemPresenter;
+  private final P itemPresenter;
 
-  protected AbstractBaseAdapter(BaseListItemPresenter<T> itemPresenter) {
+  protected AbstractBaseAdapter(P itemPresenter) {
     this.itemPresenter = itemPresenter;
   }
 
@@ -53,6 +56,10 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
     validatePosition(position);
     itemPresenter.getItems().add(position, item);
     notifyItemInserted(position);
+  }
+
+  final void bindRowDataItem(int position, IV itemView) {
+    itemPresenter.onBindRowViewAtPosition(position, itemView);
   }
 
   /**
@@ -157,8 +164,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
     if (position < 0 || position >= itemPresenter.getItems().size()) {
       throw new IndexOutOfBoundsException(
           "Please, specify a valid position that is equals or greater than 0 and less than "
-              + itemPresenter.getItems()
-              .size());
+              + itemPresenter.getItems().size());
     }
   }
 }
