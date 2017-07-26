@@ -12,6 +12,6 @@ public class AndroidNetworkMonitor implements NetworkMonitor {
 
     @Override
     public boolean isOnline() {
-        return Connectivity.isConnected(context);
+        return Connectivity.isNetworkConnected(context);
     }
 }

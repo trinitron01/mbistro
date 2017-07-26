@@ -2,6 +2,7 @@ package com.bfs.mbistro;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -209,5 +210,16 @@ public class AndroidUtils {
   public static boolean isFragmentAlive(Fragment fragment) {
     boolean isPresent = fragment.isAdded() && !fragment.isDetached() && fragment.getView() != null;
     return fragment.getActivity() != null && isPresent && !fragment.isRemoving();
+  }
+
+  public static boolean isServiceRunning(Context context, Class serviceClass) {
+    ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(
+        Integer.MAX_VALUE)) {
+      if (serviceClass.getName().equals(service.service.getClassName())) {
+        return true;
+      }
+    }
+    return false;
   }
 }

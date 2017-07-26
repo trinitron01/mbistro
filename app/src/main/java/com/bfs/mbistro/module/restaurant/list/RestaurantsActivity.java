@@ -5,14 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +21,7 @@ import com.bfs.mbistro.CollectionUtils;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.BaseActivity;
 import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
+import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,8 +36,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
@@ -46,8 +43,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class ListActivity extends BaseActivity implements OnLoadMoreListener {
+public class RestaurantsActivity extends BaseActivity implements OnLoadMoreListener {
 
   public static final int REQUEST_LOCATION = 10002;
   private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 111;
@@ -71,7 +69,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
         new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     recyclerView.setHasFixedSize(true);
     restaurantAdapter = new RestaurantLineAdapter(R.layout.progress_indeterminate,
-        new ArrayList<RestaurantContainer>());
+        new RestaurantItemPresenter(new ArrayList<RestaurantContainer>()));
     restaurantAdapter.setOnLoadMoreListener(this);
     restaurantAdapter.setIsMoreDataAvailable(false);
     recyclerView.setAdapter(restaurantAdapter);
@@ -83,6 +81,10 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
       items = paginatedList.newItems;
     }
     load(items);
+  }
+
+  @Override protected void inject(BistroComponent component) {
+    component.inject(this);
   }
 
   @Override protected void onSaveInstanceState(Bundle outState) {
@@ -124,7 +126,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
             try {
               // Show the dialog by calling startResolutionForResult(),
               // and check the result in onActivityResult().
-              status.startResolutionForResult(ListActivity.this, REQUEST_LOCATION);
+              status.startResolutionForResult(RestaurantsActivity.this, REQUEST_LOCATION);
             } catch (IntentSender.SendIntentException e) {
               // Ignore the error.
             }
@@ -150,7 +152,6 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
             .map(new Func1<Restaurants, List<RestaurantContainer>>() {
               @Override public List<RestaurantContainer> call(Restaurants restaurantsResponse) {
                 updateOffset(restaurantsResponse.resultsShown, restaurantsResponse.resultsStart);
-
                 return restaurantsResponse.restaurants;
               }
             });
@@ -171,9 +172,9 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
   }
 
   private void requestPerms() {
-    ActivityCompat.requestPermissions(this,
+  /*  ActivityCompat.requestPermissions(this,
         new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-        REQUEST_PERMISSIONS_REQUEST_CODE);
+        REQUEST_PERMISSIONS_REQUEST_CODE);*/
   }
 
   @Override public void onStart() {
@@ -189,7 +190,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
    * Gets the address for the last known location.
    */
   @SuppressWarnings("MissingPermission") private void getAddress() {
-    fusedLocationClient.getLastLocation()
+/*    fusedLocationClient.getLastLocation()
         .addOnSuccessListener(this, new OnSuccessListener<android.location.Location>() {
           @Override public void onSuccess(Location location) {
             if (location == null) {
@@ -197,7 +198,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
               onLocation(text);
             } else {
               lastLocation = location;
-                /*    service.getEstablishments(lastLocation.getLatitude(),lastLocation.getLongitude(),PL)
+                *//*    service.getEstablishments(lastLocation.getLatitude(),lastLocation.getLongitude(),PL)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new SingleSubscriber<Establishments>() {
                         @Override
                         public void onSuccess(Establishments value) {
@@ -208,7 +209,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
                         public void onError(Throwable error) {
 
                         }
-                    });*/
+                    });*//*
               onLocation("location found");
             }
             // Determine whether a Geocoder is available.
@@ -225,7 +226,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
           @Override public void onFailure(@NonNull Exception e) {
             //  showSnackbar("getLastLocation:onFailure");
           }
-        });
+        });*/
   }
 
   /**
@@ -276,7 +277,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
         showSnackbar(R.string.permission_denied_explanation, R.string.settings,
             new View.OnClickListener() {
               @Override public void onClick(View view) {
-                // Build intent that displays the App settings screen.
+                // Build intent that displays the BistroApp settings screen.
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
@@ -320,7 +321,7 @@ public class ListActivity extends BaseActivity implements OnLoadMoreListener {
     }
 
     @Override public void onError(Throwable error) {
-      crashReportingEngine.logError(error);
+      Timber.e(error);//todo wywalic
       showSnackbar(R.string.download_error, R.string.retry, new View.OnClickListener() {
         @Override public void onClick(View v) {
           load(null);

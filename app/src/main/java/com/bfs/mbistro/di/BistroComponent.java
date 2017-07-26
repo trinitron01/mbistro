@@ -1,15 +1,14 @@
 package com.bfs.mbistro.di;
 
-import com.bfs.mbistro.base.BaseActivity;
-
+import com.bfs.mbistro.module.restaurant.details.ui.DetailsActivity;
+import com.bfs.mbistro.module.restaurant.list.RestaurantsActivity;
+import dagger.Component;
 import javax.inject.Singleton;
 
-import dagger.Component;
-
-@Singleton
-@Component(modules = {BistroServiceModule.class, AppModule.class})
+@Singleton @Component(modules = { BistroServiceModule.class, AppModule.class })
 public interface BistroComponent {
 
-    void inject(BaseActivity activity);
+  void inject(RestaurantsActivity activity);
 
+  void inject(DetailsActivity activity);
 }

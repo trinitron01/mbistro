@@ -4,5 +4,4 @@ public interface CrashReportingEngine {
 
     void registerCrashReporting();
 
-  void logError(Throwable error);
 }

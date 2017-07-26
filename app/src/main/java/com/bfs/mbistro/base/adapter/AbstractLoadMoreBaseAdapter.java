@@ -32,8 +32,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bfs.mbistro.R;
+import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Base class for an Adapter
@@ -43,7 +43,8 @@ import java.util.List;
  *
  * @param <T> The type of the elements from the adapter.
  */
-public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter<T> {
+public abstract class AbstractLoadMoreBaseAdapter<T, IH extends BaseViewHolder<T>, P extends BaseListItemPresenter<T>>
+    extends AbstractBaseAdapter<T> {
 
   public static final int VIEW_TYPE_ITEM = 0;
   public static final int VIEW_TYPE_LOAD = 1;
@@ -53,38 +54,33 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
   protected OnChildClickListener<T> mOnChildCLickListener;
   private OnLoadMoreListener mOnLoadMoreListener;
   private int mResLoading;
-  private boolean mIsLoading, moreDataAvailable = true, mIsLoadingError;
-
+  private boolean mIsLoading, moreDataAvailable = true;
   /**
    * The constructor of the adapter.
    *
-   * @param lstItems The list of items.
    */
-  public AbstractLoadMoreBaseAdapter(List<T> lstItems) {
-    super();
-    init(INVALID_RESOURCE_ID, lstItems);
+  public AbstractLoadMoreBaseAdapter(P baseListItemPresenter) {
+    super(baseListItemPresenter);
+    init(INVALID_RESOURCE_ID);
   }
 
   /**
    * The constructor of the adapter.
    *
    * @param resLoading The loading resource id.
-   * @param lstItems The list of items.
    */
-  public AbstractLoadMoreBaseAdapter(int resLoading, List<T> lstItems) {
-    super();
-    init(resLoading, lstItems);
+  public AbstractLoadMoreBaseAdapter(int resLoading, P baseListItemPresenter) {
+    super(baseListItemPresenter);
+    init(resLoading);
   }
 
   /**
    * Initialization fo the adapter.
    *
    * @param resLoading The loading resource id.
-   * @param data The list of items.
    */
-  private void init(int resLoading, List<T> data) {
+  private void init(int resLoading) {
     mResLoading = resLoading;
-    mData = data;
   }
 
   @Override public BaseViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -96,12 +92,12 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
       return new BaseViewHolder<>(LayoutInflater.from(parent.getContext())
           .inflate(R.layout.empty_list_view, parent, false));
     } else {
-      final BaseViewHolder<T> baseViewHolder = createHolder(parent);
+      final BaseViewHolder<T> baseViewHolder = createItemHolder(parent);
       if (mOnChildCLickListener != null) {
         baseViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(View v) {
             int position = baseViewHolder.getAdapterPosition();
-            mOnChildCLickListener.onChildClick(v, mData.get(position), position);
+            mOnChildCLickListener.onChildClick(v, getDataSet().get(position), position);
           }
         });
       }
@@ -109,7 +105,7 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
     }
   }
 
-  @NonNull protected abstract BaseViewHolder<T> createHolder(ViewGroup parent);
+  @NonNull protected abstract IH createItemHolder(ViewGroup parent);
 
   @Override public void onBindViewHolder(BaseViewHolder<T> holder, int position) {
     if (position >= getItemCount() - 1
@@ -121,16 +117,17 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
     }
 
     if (getItemViewType(position) == VIEW_TYPE_ITEM) {
-      bindItem(holder, getItem(position));
-    } else if (getItemViewType(position) == VIEW_TYPE_LOAD && hasLoadingLayout()) {
-      bindError(holder, mIsLoadingError);
+      //noinspection unchecked
+      bindItem((IH) holder, position);
     }
   }
+
+  protected abstract void bindItem(IH holder, int position);
 
   @Override @ViewType public int getItemViewType(int position) {
     if (isDataEmpty()) {
       return VIEW_TYPE_EMPTY;
-    } else if (position > mData.size() - 1) {
+    } else if (position > getDataSet().size() - 1) {
       return VIEW_TYPE_LOAD;
     } else {
       return VIEW_TYPE_ITEM;
@@ -139,16 +136,16 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
 
   @Override public final int getItemCount() {
     if (moreDataAvailable && hasLoadingLayout()) {
-      return mData.size() + 1;
+      return getDataSet().size() + 1;
     } else if (isDataEmpty()) {
       return 1;
     } else {
-      return mData.size();
+      return getDataSet().size();
     }
   }
 
   private boolean isDataEmpty() {
-    return mData == null || mData.isEmpty();
+    return getDataSet() == null || getDataSet().isEmpty();
   }
 
   /**
@@ -178,15 +175,6 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
     this.moreDataAvailable = moreDataAvailable;
   }
 
-  /**
-   * Set if appended an error during loading.
-   *
-   * @param isError true if there was an error, false otherwise.
-   */
-  public void setLoadingError(boolean isError) {
-    mIsLoadingError = isError;
-    notifyDataSetChanged();
-  }
 
   /**
    * <p>Adds an entire data set</p>
@@ -198,7 +186,7 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
       moreDataAvailable = false;
     }
 
-    mData.addAll(data);
+    getDataSet().addAll(data);
     notifyDataSetChanged();
     mIsLoading = false;
   }
@@ -209,7 +197,6 @@ public abstract class AbstractLoadMoreBaseAdapter<T> extends AbstractBaseAdapter
   @Override public void clear() {
     super.clear();
     moreDataAvailable = true;
-    mIsLoadingError = false;
   }
 
   /**

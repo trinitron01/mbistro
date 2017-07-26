@@ -43,4 +43,6 @@ ext {
   espressoVersion = '2.2.2'
   rxAndroidVersion = '1.2.1'
   crashlyticsVersion = '2.6.8'
+  mosbyMvpVersion = '3.0.4'
+  timberVersion = '4.5.1'
 }

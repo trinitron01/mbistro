@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.BaseActivity;
+import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.model.Restaurant;
 import com.bfs.mbistro.model.RestaurantDetails;
 import rx.SingleSubscriber;
@@ -57,7 +58,11 @@ public class DetailsActivity extends BaseActivity {
         downloadDetails();
     }
 
-    private void downloadDetails() {
+  @Override protected void inject(BistroComponent component) {
+    component.inject(this);
+  }
+
+  private void downloadDetails() {
         service.getRestaurant(restaurant.getId(), "pl").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleSubscriber<RestaurantDetails>() {
                     @Override

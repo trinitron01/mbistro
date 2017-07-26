@@ -21,12 +21,12 @@ class RestaurantContainerPaginatedList extends PaginatedList<RestaurantContainer
         super(resultsShown, resultsStart, restaurants);
     }
 
-    private RestaurantContainerPaginatedList(Parcel in) {
+  private RestaurantContainerPaginatedList(Parcel in) {
         super(in);
     }
 
-    @Override
-    protected List<RestaurantContainer> readFromParcel(Parcel in) {
-        return in.createTypedArrayList(RestaurantContainer.CREATOR);
-    }
+  @Override protected Creator<RestaurantContainer> getItemCreator() {
+    return RestaurantContainer.CREATOR;
+  }
+
 }

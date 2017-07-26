@@ -26,6 +26,7 @@
 package com.bfs.mbistro.base.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,23 +37,11 @@ import java.util.List;
  */
 public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder<T>> {
 
-  protected List<T> mData;
+  private final BaseListItemPresenter<T> itemPresenter;
 
-  /**
-   * When item is binded.
-   *
-   * @param holder The item holder with error layout.
-   * @param item The item binded.
-   */
-  protected abstract void bindItem(BaseViewHolder<T> holder, T item);
-
-  /**
-   * When error is binded.
-   *
-   * @param holder The view holder with error layout.
-   * @param loadingError true if is loading an error.
-   */
-  protected abstract void bindError(BaseViewHolder<T> holder, boolean loadingError);
+  protected AbstractBaseAdapter(BaseListItemPresenter<T> itemPresenter) {
+    this.itemPresenter = itemPresenter;
+  }
 
   /**
    * <p>Adds an item on a specific position of the data set</p>
@@ -62,7 +51,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    */
   public void add(int position, T item) {
     validatePosition(position);
-    mData.add(position, item);
+    itemPresenter.getItems().add(position, item);
     notifyItemInserted(position);
   }
 
@@ -72,7 +61,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @param item Item to be added
    */
   public void add(T item) {
-    mData.add(item);
+    itemPresenter.getItems().add(item);
     notifyItemInserted(getItemPosition(item));
   }
 
@@ -84,7 +73,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    */
   public T getItem(int position) {
     validatePosition(position);
-    return mData.get(position);
+    return itemPresenter.getItems().get(position);
   }
 
   /**
@@ -94,7 +83,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    */
   public void remove(int position) {
     validatePosition(position);
-    mData.remove(position);
+    itemPresenter.getItems().remove(position);
     notifyItemRemoved(position);
   }
 
@@ -104,7 +93,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @param item The item that will be removed
    */
   public void remove(T item) {
-    mData.remove(item);
+    itemPresenter.getItems().remove(item);
     notifyItemRemoved(getItemPosition(item));
   }
 
@@ -114,7 +103,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @param ts Collection of items that will be removed
    */
   public void removeAll(Collection<T> ts) {
-    mData.removeAll(ts);
+    itemPresenter.getItems().removeAll(ts);
     notifyDataSetChanged();
   }
 
@@ -125,7 +114,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @return position: Position of the specified item
    */
   public int getItemPosition(T item) {
-    return mData.indexOf(item);
+    return itemPresenter.getItems().indexOf(item);
   }
 
   /**
@@ -135,7 +124,7 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @return true if contains otherwise false
    */
   public boolean containsItem(T item) {
-    return mData.contains(item);
+    return itemPresenter.getItems().contains(item);
   }
 
   /**
@@ -144,14 +133,14 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @return data: All items stored on this list
    */
   public List<T> getDataSet() {
-    return mData;
+    return itemPresenter.getItems();
   }
 
   /**
    * <p>Clears data set and reset loading variables</p>
    */
   public void clear() {
-    mData.clear();
+    itemPresenter.getItems().clear();
     notifyDataSetChanged();
   }
 
@@ -161,13 +150,14 @@ public abstract class AbstractBaseAdapter<T> extends RecyclerView.Adapter<BaseVi
    * @param position Specific position to be validated
    */
   private void validatePosition(int position) {
-    if (mData.isEmpty()) {
+    if (itemPresenter.getItems().isEmpty()) {
       throw new IndexOutOfBoundsException("The adapter is empty!");
     }
 
-    if (position < 0 || position >= mData.size()) {
+    if (position < 0 || position >= itemPresenter.getItems().size()) {
       throw new IndexOutOfBoundsException(
-          "Please, specify a valid position that is equals or greater than 0 and less than " + mData
+          "Please, specify a valid position that is equals or greater than 0 and less than "
+              + itemPresenter.getItems()
               .size());
     }
   }

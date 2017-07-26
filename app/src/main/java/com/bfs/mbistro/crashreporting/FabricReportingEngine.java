@@ -17,8 +17,4 @@ public class FabricReportingEngine implements CrashReportingEngine {
         Fabric.with(context, new Crashlytics());
     }
 
-  @Override public void logError(Throwable error) {
-    Crashlytics.logException(error);
-  }
-
 }

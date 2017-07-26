@@ -19,84 +19,78 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@Module
-public class BistroServiceModule {
+@Module public class BistroServiceModule {
 
-    private static final int RESPONSE_CACHE_SIZE = 10 * 1024 * 1024;
-    private final String baseUrl;
-    private final File cacheDir;
-    private final NetworkMonitor networkMonitor;
-    private final boolean useCache = true;
+  private static final int RESPONSE_CACHE_SIZE = 10 * 1024 * 1024;
+  private final String baseUrl;
+  private final File cacheDir;
+  private final NetworkMonitor networkMonitor;
+  private final boolean useCache = true;
 
-    public BistroServiceModule(String baseUrl, File cacheDir, NetworkMonitor networkMonitor) {
-        this.baseUrl = baseUrl;
-        this.cacheDir = cacheDir;
-        this.networkMonitor = networkMonitor;
-    }
+  public BistroServiceModule(String baseUrl, File cacheDir, NetworkMonitor networkMonitor) {
+    this.baseUrl = baseUrl;
+    this.cacheDir = cacheDir;
+    this.networkMonitor = networkMonitor;
+  }
 
-    @Provides
-    @Singleton
-    GsonConverterFactory provideGsonConverter() {
-        return GsonConverterFactory.create(new GsonBuilder().create());
-    }
+  @Provides @Singleton GsonConverterFactory provideGsonConverter() {
+    return GsonConverterFactory.create(new GsonBuilder().create());
+  }
 
-    @Provides
-    @Singleton
-    OkHttpClient provideOkHttpClient() {
+  @Provides @Singleton OkHttpClient provideOkHttpClient() {
+    return new OkHttpClient.Builder().cache(new Cache(cacheDir, RESPONSE_CACHE_SIZE))
+        .addInterceptor(new OfflineInterceptor())
+        .addNetworkInterceptor(new NetworkInterceptor())
+        .build();
+  }
 
-        return new OkHttpClient.Builder().addNetworkInterceptor(new NetworkInterceptor())
-            .cache(new Cache(cacheDir, RESPONSE_CACHE_SIZE))
-            .addInterceptor(new OfflineInterceptor())
+  @Provides @Singleton Retrofit provideRetrofit(GsonConverterFactory gsonConverter,
+      OkHttpClient okHttpClient) {
+    return new Retrofit.Builder().addConverterFactory(gsonConverter)
+        .baseUrl(baseUrl)
+        .client(okHttpClient)
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .build();
+  }
+
+  @Provides @Singleton ApiService provideService(Retrofit retrofit) {
+    return retrofit.create(ApiService.class);
+  }
+
+  private class NetworkInterceptor implements Interceptor {
+
+    @Override public Response intercept(Chain chain) throws IOException {
+      Request request = chain.request();
+      Request.Builder builder = request.newBuilder();
+      builder.addHeader("user-key", "b5ae9d15d056fbb3c6145958f14ad4d8")
+          .addHeader("Accept-Language", "pl,en-US;q=0.7,en;q=0.3");
+      if (!networkMonitor.isOnline()) {
+        // To be used with Application Interceptor to use Expired cache
+        builder.cacheControl(CacheControl.FORCE_CACHE);
+      }
+      Response response = chain.proceed(builder.build());
+      if (useCache) {
+        return response.newBuilder()
+            .removeHeader("Pragma")
+            .removeHeader("Cache-Control")
+            .header("Cache-Control", "max-age=" + TimeUnit.MINUTES.toSeconds(60))
             .build();
-
+      } else {
+        return response;
+      }
     }
+  }
 
-    @Provides
-    @Singleton
-    Retrofit provideRetrofit(GsonConverterFactory gsonConverter, OkHttpClient okHttpClient) {
-        return new Retrofit.Builder().addConverterFactory(gsonConverter).baseUrl(baseUrl).client(okHttpClient)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
+  private class OfflineInterceptor implements Interceptor {
+
+    @Override public Response intercept(Chain chain) throws IOException {
+      Request request = chain.request();
+      Request.Builder builder = request.newBuilder();
+      if (useCache && !networkMonitor.isOnline()) {
+        // To be used with Application Interceptor to use Expired cache
+        builder.cacheControl(CacheControl.FORCE_CACHE);
+      }
+      return chain.proceed(builder.build());
     }
-
-    @Provides
-    @Singleton
-    ApiService provideService(Retrofit retrofit) {
-        return retrofit.create(ApiService.class);
-    }
-
-    private class NetworkInterceptor implements Interceptor {
-
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            Request.Builder builder = request.newBuilder();
-            builder.addHeader("user-key", "b5ae9d15d056fbb3c6145958f14ad4d8").addHeader("Accept-Language", "pl,en-US;q=0.7,en;q=0.3");
-            if (!networkMonitor.isOnline()) {
-                // To be used with Application Interceptor to use Expired cache
-                builder.cacheControl(CacheControl.FORCE_CACHE);
-            }
-            Response response = chain.proceed(builder.build());
-            if (useCache) {
-                return response.newBuilder().removeHeader("Pragma").removeHeader("Cache-Control")
-                        .header("Cache-Control", "max-age=" + TimeUnit.MINUTES.toSeconds(60)).build();
-            } else {
-                return response;
-            }
-
-        }
-    }
-
-    private class OfflineInterceptor implements Interceptor {
-
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            Request.Builder builder = request.newBuilder();
-            if (useCache && !networkMonitor.isOnline()) {
-                // To be used with Application Interceptor to use Expired cache
-                builder.cacheControl(CacheControl.FORCE_CACHE);
-            }
-            return chain.proceed(builder.build());
-        }
-    }
+  }
 }

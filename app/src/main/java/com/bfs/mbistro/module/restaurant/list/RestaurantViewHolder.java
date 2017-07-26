@@ -5,17 +5,17 @@ import android.widget.TextView;
 import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.model.RestaurantContainer;
 
-public class RestaurantViewHolder extends BaseViewHolder<RestaurantContainer> {
+public class RestaurantViewHolder extends BaseViewHolder<RestaurantContainer>
+    implements RestaurantRowView {
 
-    final TextView tv;
+  private final TextView tv;
 
-    public RestaurantViewHolder(View itemView) {
-        super(itemView);
-        tv = (TextView) itemView.findViewById(android.R.id.text1);
-    }
+  public RestaurantViewHolder(View itemView) {
+    super(itemView);
+    tv = (TextView) itemView.findViewById(android.R.id.text1);
+  }
 
-    @Override public void bind(RestaurantContainer item) {
-        super.bind(item);
-        tv.setText(item.getName());
-    }
+  @Override public void showRestaurantInfo(RestaurantContainer item) {
+    tv.setText(item.getName());
+  }
 }
