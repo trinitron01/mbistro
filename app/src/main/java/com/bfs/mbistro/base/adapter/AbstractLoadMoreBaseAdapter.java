@@ -33,8 +33,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
-import com.bfs.mbistro.base.presenter.MvpItemsView;
-import com.hannesdorfmann.mosby3.mvp.MvpView;
+import com.bfs.mbistro.base.view.MvpItemView;
+import com.bfs.mbistro.base.view.MvpItemsView;
 import java.util.Collection;
 
 /**
@@ -45,7 +45,7 @@ import java.util.Collection;
  *
  * @param <T> The type of the elements from the adapter.
  */
-public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
+public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
     extends AbstractBaseAdapter<T, IV, V, P> {
 
   public static final int VIEW_TYPE_ITEM = 0;

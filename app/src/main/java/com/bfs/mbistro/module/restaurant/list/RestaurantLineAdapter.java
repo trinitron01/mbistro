@@ -7,6 +7,10 @@ import com.bfs.mbistro.base.adapter.AbstractLoadMoreBaseAdapter;
 import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.model.RestaurantContainer;
 
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantRowView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantsPresenter;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantsView;
+
 public class RestaurantLineAdapter extends
     AbstractLoadMoreBaseAdapter<RestaurantContainer, RestaurantRowView, RestaurantsView, RestaurantsPresenter> {
 
@@ -18,5 +22,4 @@ public class RestaurantLineAdapter extends
     return new RestaurantViewHolder(LayoutInflater.from(parent.getContext())
         .inflate(android.R.layout.simple_list_item_1, parent, false));
   }
-
 }

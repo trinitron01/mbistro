@@ -28,12 +28,12 @@ package com.bfs.mbistro.base.adapter;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import com.hannesdorfmann.mosby3.mvp.MvpView;
+import com.bfs.mbistro.base.view.MvpItemView;
 
 /**
  * This class is an Base ViewHolder for recycler views.
  */
-public class BaseViewHolder extends RecyclerView.ViewHolder implements MvpView {
+public class BaseViewHolder extends RecyclerView.ViewHolder implements MvpItemView {
 
   /**
    * Constructor of view holder.

@@ -27,8 +27,8 @@ package com.bfs.mbistro.base.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
-import com.bfs.mbistro.base.presenter.MvpItemsView;
-import com.hannesdorfmann.mosby3.mvp.MvpView;
+import com.bfs.mbistro.base.view.MvpItemView;
+import com.bfs.mbistro.base.view.MvpItemsView;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @param <T> The type of the elements from the adapter.
  */
-public abstract class AbstractBaseAdapter<T, IV extends MvpView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
+public abstract class AbstractBaseAdapter<T, IV extends MvpItemView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
     extends RecyclerView.Adapter<BaseViewHolder> {
 
   private final P itemPresenter;

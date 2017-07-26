@@ -14,6 +14,7 @@ import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
+import com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract;
 import com.bfs.mbistro.network.ApiService;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ import rx.schedulers.Schedulers;
 
 import static com.bfs.mbistro.AndroidUtils.showSnackbar;
 
-public class RestaurantsFragment extends Fragment implements OnLoadMoreListener, RestaurantsView {
+public class RestaurantsFragment extends Fragment
+    implements OnLoadMoreListener, RestaurantsContract.RestaurantsView {
 
   private static final String PL = "pl";
   private static final String LIST_KEY = "LIST_KEY";
@@ -35,7 +37,7 @@ public class RestaurantsFragment extends Fragment implements OnLoadMoreListener,
   private int resultsShown;
   private int resultsStart;
   private PaginatedList<RestaurantContainer> paginatedList;
-  private RestaurantsPresenter restaurantsPresenter;
+  private RestaurantsContract.RestaurantsPresenter restaurantsPresenter;
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -49,7 +51,8 @@ public class RestaurantsFragment extends Fragment implements OnLoadMoreListener,
     recyclerView.setLayoutManager(
         new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     recyclerView.setHasFixedSize(true);
-    restaurantsPresenter = new RestaurantsPresenter(new ArrayList<RestaurantContainer>());
+    restaurantsPresenter =
+        new RestaurantsContract.RestaurantsPresenter(new ArrayList<RestaurantContainer>());
     restaurantsPresenter.attachView(this);
     restaurantAdapter =
         new RestaurantLineAdapter(R.layout.progress_indeterminate, restaurantsPresenter);

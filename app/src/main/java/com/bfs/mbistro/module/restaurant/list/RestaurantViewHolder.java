@@ -5,6 +5,8 @@ import android.widget.TextView;
 import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.model.RestaurantContainer;
 
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantRowView;
+
 public class RestaurantViewHolder extends BaseViewHolder implements RestaurantRowView {
 
   private final TextView tv;

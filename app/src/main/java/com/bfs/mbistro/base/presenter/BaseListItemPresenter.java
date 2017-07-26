@@ -1,10 +1,11 @@
 package com.bfs.mbistro.base.presenter;
 
+import com.bfs.mbistro.base.view.MvpItemView;
+import com.bfs.mbistro.base.view.MvpItemsView;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
-import com.hannesdorfmann.mosby3.mvp.MvpView;
 import java.util.List;
 
-public abstract class BaseListItemPresenter<T, IV extends MvpView, V extends MvpItemsView>
+public abstract class BaseListItemPresenter<T, IV extends MvpItemView, V extends MvpItemsView>
     extends MvpBasePresenter<V> {
   private final List<T> items;
 

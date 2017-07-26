@@ -1,4 +1,4 @@
-package com.bfs.mbistro.base.presenter;
+package com.bfs.mbistro.base.view;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
