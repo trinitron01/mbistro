@@ -14,6 +14,7 @@ import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
+import com.bfs.mbistro.module.restaurant.details.ui.DetailsActivity;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract;
 import com.bfs.mbistro.network.ApiService;
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ public class RestaurantsFragment extends Fragment
   private static final String LIST_KEY = "LIST_KEY";
   @Inject protected ApiService service;
   private RestaurantLineAdapter restaurantAdapter;
-  private int resultsShown;
-  private int resultsStart;
+  private int itemsShown;
+  private int itemsStartIndex;
   private PaginatedList<RestaurantContainer> paginatedList;
   private RestaurantsContract.RestaurantsPresenter restaurantsPresenter;
 
@@ -64,7 +65,8 @@ public class RestaurantsFragment extends Fragment
   @Override public void onSaveInstanceState(Bundle outState) {
     List<RestaurantContainer> restaurants = restaurantAdapter.getDataSet();
     if (CollectionUtils.isNotNullNorEmpty(restaurants)) {
-      paginatedList = new RestaurantContainerPaginatedList(restaurants, resultsShown, resultsStart);
+      paginatedList =
+          new RestaurantContainerPaginatedList(restaurants, itemsShown, itemsStartIndex);
       outState.putParcelable(LIST_KEY, paginatedList);
     }
     super.onSaveInstanceState(outState);
@@ -88,7 +90,7 @@ public class RestaurantsFragment extends Fragment
 
   private void load(List<RestaurantContainer> cachedItems) {
     Observable<List<RestaurantContainer>> network =
-        service.getRestaurants(264, "city", PL, resultsShown, 20)
+        service.getRestaurants(264, "city", PL, itemsShown, 20)
             .subscribeOn(Schedulers.io())
             .map(new Func1<Restaurants, List<RestaurantContainer>>() {
               @Override public List<RestaurantContainer> call(Restaurants restaurantsResponse) {
@@ -113,13 +115,17 @@ public class RestaurantsFragment extends Fragment
   }
 
   private void updateOffset(int resultsShown, int resultsStart) {
-    this.resultsShown += resultsShown;
-    this.resultsStart = resultsStart;
-    restaurantAdapter.setIsMoreDataAvailable(resultsShown < 100 && resultsStart <= 80);
+    this.itemsShown += resultsShown;
+    this.itemsStartIndex = resultsStart;
+    restaurantAdapter.setIsMoreDataAvailable(itemsShown < 100 && itemsStartIndex <= 80);
   }
 
   @Override public void showItems() {
     restaurantAdapter.onDataChanged();
+  }
+
+  @Override public void showItemDetails(RestaurantContainer restaurantContainer) {
+    DetailsActivity.start(getContext(), restaurantContainer.restaurant);
   }
 
   @Override public void onDestroyView() {

@@ -6,18 +6,18 @@ import com.bfs.mbistro.base.view.MvpItemsView;
 import com.bfs.mbistro.model.RestaurantContainer;
 import java.util.List;
 
-public class RestaurantsContract {
+public interface RestaurantsContract {
 
-  public interface RestaurantRowView extends MvpItemView {
+  interface RestaurantRowView extends MvpItemView {
 
     void showRestaurantRow(RestaurantContainer item);
   }
 
-  public interface RestaurantsView extends MvpItemsView {
+  interface RestaurantsView extends MvpItemsView<RestaurantContainer> {
 
   }
 
-  public static class RestaurantsPresenter
+  class RestaurantsPresenter
       extends BaseListItemPresenter<RestaurantContainer, RestaurantRowView, RestaurantsView> {
     public RestaurantsPresenter(List<RestaurantContainer> items) {
       super(items);

@@ -45,7 +45,7 @@ import java.util.Collection;
  *
  * @param <T> The type of the elements from the adapter.
  */
-public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V extends MvpItemsView, P extends BaseListItemPresenter<T, IV, V>>
+public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V extends MvpItemsView<T>, P extends BaseListItemPresenter<T, IV, V>>
     extends AbstractBaseAdapter<T, IV, V, P> {
 
   public static final int VIEW_TYPE_ITEM = 0;

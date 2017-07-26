@@ -1,7 +1,7 @@
 package com.bfs.mbistro.base.listener;
 
-public interface ItemClickListener<I> {
+public interface ItemClickListener<T> {
 
-    void onItemClicked(I item);
+  void onItemClicked(T item);
 
 }
