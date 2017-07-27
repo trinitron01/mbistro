@@ -9,14 +9,14 @@ import com.bfs.mbistro.base.adapter.AbstractLoadMoreBaseAdapter;
 import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.model.RestaurantContainer;
 
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantRowView;
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantsPresenter;
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantsView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.ItemsView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.Presenter;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RowView;
 
 public class RestaurantLineAdapter extends
-    AbstractLoadMoreBaseAdapter<RestaurantContainer, RestaurantRowView, RestaurantsView, RestaurantsPresenter> {
+    AbstractLoadMoreBaseAdapter<RestaurantContainer, RowView, ItemsView, Presenter> {
 
-  public RestaurantLineAdapter(int resLoading, RestaurantsPresenter restaurantsPresenter) {
+  public RestaurantLineAdapter(int resLoading, Presenter restaurantsPresenter) {
     super(resLoading, restaurantsPresenter);
   }
 

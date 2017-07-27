@@ -15,7 +15,6 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".module.restaurant.list.RestaurantsActivity"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,10 +31,8 @@
             android:value="AIzaSyDYyzi_I55Ph6Dj3tKq55hDI2Sx-obDNo8" />
 
         <activity
-            android:name=".module.restaurant.details.ui.DetailsActivity"
-            android:label="@string/title_activity_details"
-            android:parentActivityName=".module.restaurant.list.RestaurantsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".module.restaurant.details.ui.RestaurantDetailsActivity"
+            android:parentActivityName=".module.restaurant.list.RestaurantsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bfs.mbistro.module.restaurant.list.RestaurantsActivity"/>

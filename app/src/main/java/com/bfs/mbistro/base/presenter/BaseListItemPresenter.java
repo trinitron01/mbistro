@@ -23,6 +23,7 @@ public abstract class BaseListItemPresenter<T, IV extends MvpItemView, V extends
   public void appendItems(List<T> items) {
     this.items.addAll(items);
     getView().showItems();
+    getView().hideProgress();
   }
 
   @Override public void onItemClicked(T item) {

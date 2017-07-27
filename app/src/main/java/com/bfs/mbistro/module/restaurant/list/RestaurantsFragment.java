@@ -8,13 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.bfs.mbistro.AndroidUtils;
 import com.bfs.mbistro.BistroApp;
 import com.bfs.mbistro.CollectionUtils;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
-import com.bfs.mbistro.module.restaurant.details.ui.DetailsActivity;
+import com.bfs.mbistro.module.restaurant.details.ui.RestaurantDetailsActivity;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract;
 import com.bfs.mbistro.network.ApiService;
 import java.util.ArrayList;
@@ -23,13 +24,14 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.bfs.mbistro.AndroidUtils.showSnackbar;
 
 public class RestaurantsFragment extends Fragment
-    implements OnLoadMoreListener, RestaurantsContract.RestaurantsView {
+    implements OnLoadMoreListener, RestaurantsContract.ItemsView {
 
   private static final String PL = "pl";
   private static final String LIST_KEY = "LIST_KEY";
@@ -38,7 +40,9 @@ public class RestaurantsFragment extends Fragment
   private int itemsShown;
   private int itemsStartIndex;
   private PaginatedList<RestaurantContainer> paginatedList;
-  private RestaurantsContract.RestaurantsPresenter restaurantsPresenter;
+  private RestaurantsContract.Presenter restaurantsPresenter;
+  private RecyclerView recyclerView;
+  private View progressBar;
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -48,12 +52,12 @@ public class RestaurantsFragment extends Fragment
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+    recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+    progressBar = view.findViewById(R.id.loadingView);
     recyclerView.setLayoutManager(
         new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     recyclerView.setHasFixedSize(true);
-    restaurantsPresenter =
-        new RestaurantsContract.RestaurantsPresenter(new ArrayList<RestaurantContainer>());
+    restaurantsPresenter = new RestaurantsContract.Presenter(new ArrayList<RestaurantContainer>());
     restaurantsPresenter.attachView(this);
     restaurantAdapter =
         new RestaurantLineAdapter(R.layout.progress_indeterminate, restaurantsPresenter);
@@ -76,7 +80,7 @@ public class RestaurantsFragment extends Fragment
     super.onActivityCreated(savedInstanceState);
     ((BistroApp) getActivity().getApplication()).component.inject(this);
     List<RestaurantContainer> items = null;
-    if (savedInstanceState != null) {
+    if (savedInstanceState != null && savedInstanceState.containsKey(LIST_KEY)) {
       paginatedList = savedInstanceState.getParcelable(LIST_KEY);
       updateOffset(paginatedList.resultsShown, paginatedList.resultsStart);
       items = paginatedList.newItems;
@@ -110,6 +114,13 @@ public class RestaurantsFragment extends Fragment
     } else {
       callObservable = network;
     }
+    if (itemsShown == 0) {
+      callObservable = callObservable.doOnSubscribe(new Action0() {
+        @Override public void call() {
+          showProgress();
+        }
+      });
+    }
     callObservable.observeOn(AndroidSchedulers.mainThread())
         .subscribe(new PaginatedListSingleSubscriber());
   }
@@ -121,11 +132,21 @@ public class RestaurantsFragment extends Fragment
   }
 
   @Override public void showItems() {
+    AndroidUtils.setVisibilityIfDifferent(recyclerView, View.VISIBLE);
     restaurantAdapter.onDataChanged();
   }
 
+  @Override public void showProgress() {
+    recyclerView.setVisibility(View.GONE);
+    progressBar.setVisibility(View.VISIBLE);
+  }
+
+  @Override public void hideProgress() {
+    progressBar.setVisibility(View.GONE);
+  }
+
   @Override public void showItemDetails(RestaurantContainer restaurantContainer) {
-    DetailsActivity.start(getContext(), restaurantContainer.restaurant);
+    RestaurantDetailsActivity.start(getContext(), restaurantContainer.restaurant);
   }
 
   @Override public void onDestroyView() {

@@ -8,22 +8,22 @@ import java.util.List;
 
 public interface RestaurantsContract {
 
-  interface RestaurantRowView extends MvpItemView {
+  interface RowView extends MvpItemView {
 
     void showRestaurantRow(RestaurantContainer item);
   }
 
-  interface RestaurantsView extends MvpItemsView<RestaurantContainer> {
+  interface ItemsView extends MvpItemsView<RestaurantContainer> {
 
   }
 
-  class RestaurantsPresenter
-      extends BaseListItemPresenter<RestaurantContainer, RestaurantRowView, RestaurantsView> {
-    public RestaurantsPresenter(List<RestaurantContainer> items) {
+  class Presenter extends BaseListItemPresenter<RestaurantContainer, RowView, ItemsView> {
+
+    public Presenter(List<RestaurantContainer> items) {
       super(items);
     }
 
-    @Override public void onBindRowViewAtPosition(int position, RestaurantRowView view) {
+    @Override public void onBindRowViewAtPosition(int position, RowView view) {
       view.showRestaurantRow(getItems().get(position));
     }
   }

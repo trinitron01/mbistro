@@ -153,4 +153,72 @@ public class RestaurantDetails implements Parcelable {
         dest.writeString(phoneNumbers);
         dest.writeTypedList(allReviews);
     }
+
+  @Override public String toString() {
+    return "RestaurantDetails{"
+        + "id='"
+        + id
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", url='"
+        + url
+        + '\''
+        + ", location="
+        + location
+        + ", averageCostForTwo='"
+        + averageCostForTwo
+        + '\''
+        + ", priceRange='"
+        + priceRange
+        + '\''
+        + ", currency='"
+        + currency
+        + '\''
+        + ", thumb='"
+        + thumb
+        + '\''
+        + ", featuredImage='"
+        + featuredImage
+        + '\''
+        + ", photosUrl='"
+        + photosUrl
+        + '\''
+        + ", menuUrl='"
+        + menuUrl
+        + '\''
+        + ", eventsUrl='"
+        + eventsUrl
+        + '\''
+        + ", userRating="
+        + userRating
+        + ", hasOnlineDelivery='"
+        + hasOnlineDelivery
+        + '\''
+        + ", isDeliveringNow='"
+        + isDeliveringNow
+        + '\''
+        + ", hasTableBooking='"
+        + hasTableBooking
+        + '\''
+        + ", deeplink='"
+        + deeplink
+        + '\''
+        + ", cuisines='"
+        + cuisines
+        + '\''
+        + ", allReviewsCount='"
+        + allReviewsCount
+        + '\''
+        + ", photoCount='"
+        + photoCount
+        + '\''
+        + ", phoneNumbers='"
+        + phoneNumbers
+        + '\''
+        + ", allReviews="
+        + allReviews
+        + '}';
+  }
 }

@@ -29,7 +29,6 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
@@ -53,10 +52,10 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
   public static final int VIEW_TYPE_EMPTY = -1;
 
   private static final int INVALID_RESOURCE_ID = -1;
-  protected OnChildClickListener<T> mOnChildCLickListener;
-  private OnLoadMoreListener mOnLoadMoreListener;
-  private int mResLoading;
-  private boolean mIsLoading, moreDataAvailable = true;
+  private OnLoadMoreListener loadMoreListener;
+  private int resLoading;
+  private boolean isLoading;
+  private boolean moreDataAvailable = true;
   /**
    * The constructor of the adapter.
    *
@@ -82,28 +81,19 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
    * @param resLoading The loading resource id.
    */
   private void init(int resLoading) {
-    mResLoading = resLoading;
+    this.resLoading = resLoading;
   }
 
   @Override public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
     if (viewType == VIEW_TYPE_LOAD && hasLoadingLayout()) {
       return new BaseViewHolder(
-          LayoutInflater.from(parent.getContext()).inflate(mResLoading, parent, false));
+          LayoutInflater.from(parent.getContext()).inflate(resLoading, parent, false));
     } else if (viewType == VIEW_TYPE_EMPTY) {
       return new BaseViewHolder(LayoutInflater.from(parent.getContext())
           .inflate(R.layout.empty_list_view, parent, false));
     } else {
-      final BaseViewHolder baseViewHolder = createItemHolder(parent);
-      if (mOnChildCLickListener != null) {
-        baseViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-          @Override public void onClick(View v) {
-            int position = baseViewHolder.getAdapterPosition();
-            mOnChildCLickListener.onChildClick(v, getDataSet().get(position), position);
-          }
-        });
-      }
-      return baseViewHolder;
+      return createItemHolder(parent);
     }
   }
 
@@ -112,10 +102,10 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
   @Override public final void onBindViewHolder(BaseViewHolder holder, int position) {
     if (position >= getItemCount() - 1
         && moreDataAvailable
-        && !mIsLoading
-        && mOnLoadMoreListener != null) {
-      mIsLoading = true;
-      mOnLoadMoreListener.onLoadMore();
+        && !isLoading
+        && loadMoreListener != null) {
+      isLoading = true;
+      loadMoreListener.onLoadMore();
     }
 
     if (getItemViewType(position) == VIEW_TYPE_ITEM) {
@@ -155,16 +145,7 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
    * @param onLoadMoreListener The listener called when there is more data to load.
    */
   public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-    mOnLoadMoreListener = onLoadMoreListener;
-  }
-
-  /**
-   * Set the on click listener on list elements.
-   *
-   * @param listener the listener called when an element is clicked.
-   */
-  public void setOnChildClickListener(OnChildClickListener<T> listener) {
-    this.mOnChildCLickListener = listener;
+    loadMoreListener = onLoadMoreListener;
   }
 
   /**
@@ -189,7 +170,7 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
 
     getDataSet().addAll(data);
     notifyDataSetChanged();
-    mIsLoading = false;
+    isLoading = false;
   }
 
   /**
@@ -206,12 +187,12 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
    * @return true if is present, false otherwise.
    */
   private boolean hasLoadingLayout() {
-    return mResLoading != INVALID_RESOURCE_ID;
+    return resLoading != INVALID_RESOURCE_ID;
   }
 
   public void onDataChanged() {
     notifyDataSetChanged();
-    mIsLoading = false;
+    isLoading = false;
   }
 
   @IntDef({ VIEW_TYPE_ITEM, VIEW_TYPE_LOAD, VIEW_TYPE_EMPTY }) @interface ViewType {

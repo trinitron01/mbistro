@@ -7,10 +7,9 @@ import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.base.listener.ItemClickListener;
 import com.bfs.mbistro.model.RestaurantContainer;
 
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RestaurantRowView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RowView;
 
-public class RestaurantViewHolder extends BaseViewHolder
-    implements RestaurantRowView, View.OnClickListener {
+public class RestaurantViewHolder extends BaseViewHolder implements RowView, View.OnClickListener {
 
   private final TextView tv;
   private ItemClickListener<RestaurantContainer> itemClickListener;
