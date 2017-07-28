@@ -3,6 +3,7 @@ package com.bfs.mbistro.network;
 import com.bfs.mbistro.model.Establishments;
 import com.bfs.mbistro.model.RestaurantDetails;
 import com.bfs.mbistro.model.Restaurants;
+import com.bfs.mbistro.model.location.UserLocation;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -18,6 +19,9 @@ public interface ApiService {
     Single<RestaurantDetails> getRestaurant(@Query("res_id") String restaurantId, @Query("lang") String langId);
 
   @GET("establishments") Single<Establishments> getEstablishments(@Query("lat") double lat,
+      @Query("lon") double lon, @Query("lang") String langId);
+
+  @GET("geocode") Observable<UserLocation> geocode(@Query("lat") double lat,
       @Query("lon") double lon, @Query("lang") String langId);
 
 }

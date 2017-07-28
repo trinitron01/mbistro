@@ -18,6 +18,13 @@ public abstract class BaseListItemPresenter<T, IV extends MvpItemView, V extends
     return items;
   }
 
+  public void setItems(List<T> items) {
+    this.items.clear();
+    this.items.addAll(items);
+    getView().showItems();
+    getView().hideProgress();
+  }
+
   public abstract void onBindRowViewAtPosition(int position, IV view);
 
   public void appendItems(List<T> items) {
