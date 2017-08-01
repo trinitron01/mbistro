@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import com.bfs.mbistro.AndroidUtils;
 import com.bfs.mbistro.BistroApp;
 import com.bfs.mbistro.CollectionUtils;
@@ -23,6 +25,7 @@ import com.bfs.mbistro.model.location.UserLocation;
 import com.bfs.mbistro.module.restaurant.details.ui.RestaurantDetailsActivity;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract;
 import com.bfs.mbistro.network.ApiService;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -60,12 +63,15 @@ public class RestaurantsFragment extends Fragment
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.restaurants_list, container, false);
+    return inflater.inflate(R.layout.frame_progress_with_recycler, container, false);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+    int resId = R.anim.layout_animation_fall_down;
+    LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), resId);
+    recyclerView.setLayoutAnimation(animation);
     progressBar = view.findViewById(R.id.loadingView);
     recyclerView.setLayoutManager(
         new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -218,7 +224,12 @@ public class RestaurantsFragment extends Fragment
     @Override public void onError(Throwable error) {
       if (error instanceof HttpException) {
         HttpException httpException = (HttpException) error;
-        Timber.w("Paginated List loading error " + httpException.response().errorBody());
+        try {
+          Timber.w("Paginated List loading error " + httpException.response().errorBody().string());
+        } catch (IOException e) {
+          Timber.w("Paginated List loading error ");
+          e.printStackTrace();
+        }
       }
       //todo do presentera
       showSnackbar(getActivity(), R.string.download_error, R.string.retry,
