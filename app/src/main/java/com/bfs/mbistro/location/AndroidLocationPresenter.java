@@ -98,6 +98,7 @@ public class AndroidLocationPresenter extends LocationPresenter
   }
 
   @Override public void requestLocationSettingsChange() {
+    getView().showLocationSearchingProgress();
     final LocationRequest locationRequest = createLocationRequest();
     LocationSettingsRequest.Builder builder =
         new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
@@ -119,6 +120,7 @@ public class AndroidLocationPresenter extends LocationPresenter
     } else {
       onNewLocationObtained(location);
       if (!Geocoder.isPresent()) {
+        getView().hideLocationSearchingProgress();
         getView().showLocationError(
             activity.getString(R.string.no_geocoder_available));//todo geocoder ?
       }
@@ -128,7 +130,8 @@ public class AndroidLocationPresenter extends LocationPresenter
   }
 
   private void onNewLocationObtained(@NonNull Location newLocation) {
-    getView().showLocation(newLocation);
+    getView().hideLocationSearchingProgress();
+    getView().showFoundLocation(newLocation);
     this.location = newLocation;
   }
 

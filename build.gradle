@@ -34,7 +34,7 @@ ext {
 
   // App dependencies
   supportLibraryVersion = '25.3.1'
-  daggerVersion = '2.8'
+  daggerVersion = '2.11'
   playServicesVersion = '11.0.2'
   retrofitVersion = '2.3.0'
 

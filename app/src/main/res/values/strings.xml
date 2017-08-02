@@ -10,4 +10,5 @@
   <string name="google_play_api_client_connection_failed">Nie udało się połączyć z usługami Google Play</string>
   <string name="error_location_not_found">Lokalizacja nie mogła być znaleziona</string>
   <string name="turn_on_location">Włącz</string>
+  <string name="location_search_in_progress">Określanie lokalizacji…</string>
 </resources>

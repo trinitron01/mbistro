@@ -10,7 +10,11 @@ public interface LocationConditionsView extends MvpView {
 
   void askForLocationPermissions();
 
-  void showLocation(Location location);
+  void showLocationSearchingProgress();
+
+  void hideLocationSearchingProgress();
+
+  void showFoundLocation(Location location);
 
   void showLocationError(String error);
 

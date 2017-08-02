@@ -30,6 +30,7 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
   private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 111;
 
   private AndroidLocationPresenter locationPresenter;
+  private Snackbar locationSnackbar;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -57,15 +58,20 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
    * @param text The Snackbar text.
    */
   private void showSnackbar(final CharSequence text) {
-    View container = findViewById(android.R.id.content);
+    View container = getSnackbarContainer();
     if (container != null) {
-      Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
+      Snackbar snackbar = Snackbar.make(container, text, Snackbar.LENGTH_LONG);
+      snackbar.show();
     }
+  }
+
+  protected View getSnackbarContainer() {
+    return findViewById(android.R.id.content);
   }
 
   private void showSnackbar(Activity activity, final int mainTextStringId, final int actionStringId,
       View.OnClickListener listener) {
-    Snackbar.make(findViewById(android.R.id.content), activity.getString(mainTextStringId),
+    Snackbar.make(getSnackbarContainer(), activity.getString(mainTextStringId),
         Snackbar.LENGTH_INDEFINITE).setAction(activity.getString(actionStringId), listener).show();
   }
 
@@ -102,7 +108,25 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
         REQUEST_PERMISSIONS_REQUEST_CODE);
   }
 
-  @Override public void showLocation(Location location) {
+  @Override public void showLocationSearchingProgress() {
+    if (locationSnackbar == null || !locationSnackbar.isShownOrQueued()) {
+      locationSnackbar =
+          Snackbar.make(getSnackbarContainer(), getString(R.string.location_search_in_progress),
+              Snackbar.LENGTH_INDEFINITE);
+      locationSnackbar.show();
+    }
+  }
+
+  @Override public void hideLocationSearchingProgress() {
+    if (locationSnackbar != null && locationSnackbar.isShown()) {
+      locationSnackbar.dismiss();
+    }
+  }
+
+  @Override public void showFoundLocation(Location location) {
+    if (locationSnackbar != null && locationSnackbar.isShown()) {
+      locationSnackbar.dismiss();
+    }
     RestaurantsFragment restaurantsFragment =
         (RestaurantsFragment) getSupportFragmentManager().findFragmentById(
             R.id.restaurants_fragment);
