@@ -13,16 +13,16 @@ import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.ItemsVie
 import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.Presenter;
 import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RowView;
 
-public class RestaurantLineAdapter extends
+class RestaurantLineAdapter extends
     AbstractLoadMoreBaseAdapter<RestaurantContainer, RowView, ItemsView, Presenter> {
 
-  public RestaurantLineAdapter(int resLoading, Presenter restaurantsPresenter) {
+  RestaurantLineAdapter(int resLoading, Presenter restaurantsPresenter) {
     super(resLoading, restaurantsPresenter);
   }
 
   @NonNull @Override protected BaseViewHolder createItemHolder(ViewGroup parent) {
     View itemView = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.list_item_single_line, parent, false);
+        .inflate(R.layout.list_item_restaurant, parent, false);
     return new RestaurantViewHolder(itemView, getItemClickListener());
   }
 }

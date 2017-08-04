@@ -21,9 +21,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -192,10 +197,40 @@ public class AndroidUtils {
     }
   }
 
-  public static Drawable getTintedDrawable(Context context, int drawableResId, int colorResId) {
-    Drawable drawable = context.getResources().getDrawable(drawableResId);
-    int color = context.getResources().getColor(colorResId);
-    drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+  public static Drawable tintDrawable(Context context, @DrawableRes int drawableResId,
+      @ColorRes int colorResId) {
+
+    Drawable drawable = ContextCompat.getDrawable(context, drawableResId);
+    int color = ContextCompat.getColor(context, colorResId);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      drawable.setTint(color);
+      drawable.setTintMode(PorterDuff.Mode.SRC_IN);
+    } else {
+      drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    }
+    return drawable;
+  }
+
+  public static Drawable tintDrawable(Context context, Drawable drawable,
+      @ColorRes int colorResId) {
+    int color = ContextCompat.getColor(context, colorResId);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      drawable.setTint(color);
+      drawable.setTintMode(PorterDuff.Mode.SRC_IN);
+    } else {
+      drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    }
+    return drawable;
+  }
+
+  public static Drawable tintDrawable(Drawable drawable, @ColorInt int color) {
+    PorterDuff.Mode mode = PorterDuff.Mode.DST_ATOP;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      drawable.setTint(color);
+      drawable.setTintMode(mode);
+    } else {
+      drawable.setColorFilter(color, mode);
+    }
     return drawable;
   }
 
@@ -235,5 +270,41 @@ public class AndroidUtils {
       final int actionStringId, View.OnClickListener listener) {
     Snackbar.make(activity.findViewById(android.R.id.content), activity.getString(mainTextStringId),
         Snackbar.LENGTH_INDEFINITE).setAction(activity.getString(actionStringId), listener).show();
+  }
+
+  /**
+   * Carries out (lollipop-compliant) backwards compatible tinting that also includes wrapping the
+   * drawable.
+   *
+   * @param drawableId the drawable resource id.
+   * @param tintColor the color in which to tint.
+   * @return the wrapped and tinted drawable.
+   */
+  public static Drawable getTintedVectorDrawable(@DrawableRes int drawableId,
+      @ColorInt int tintColor, Context context) {
+    Drawable drawable = null;
+    if (drawableId > 0) {
+      VectorDrawableCompat drawableCompat = getVectorDrawable(drawableId, context);
+      if (tintColor == 0) {
+        drawable = drawableCompat;
+      } else {
+        drawable = drawableCompat.mutate();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+      }
+    }
+    return drawable;
+  }
+
+  /**
+   * Use this if you don't have a context handy or don't need to set a specific theme, the method
+   * will resort to using the application context.
+   *
+   * @param drawableId the resource id of the drawable
+   * @return the created {@link VectorDrawableCompat} instance.
+   */
+  public static VectorDrawableCompat getVectorDrawable(@DrawableRes int drawableId,
+      Context context) {
+    return VectorDrawableCompat.create(context.getResources(), drawableId, context.getTheme());
   }
 }

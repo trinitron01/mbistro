@@ -26,9 +26,7 @@ public class RestaurantDetails implements Parcelable {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("location")
-    @Expose
-    private Location location;
+    @SerializedName("location") @Expose private RestaurantLocation location;
     @SerializedName("average_cost_for_two")
     @Expose
     private String averageCostForTwo;
@@ -88,7 +86,7 @@ public class RestaurantDetails implements Parcelable {
         id = in.readString();
         name = in.readString();
         url = in.readString();
-        location = in.readParcelable(Location.class.getClassLoader());
+      location = in.readParcelable(RestaurantLocation.class.getClassLoader());
         averageCostForTwo = in.readString();
         priceRange = in.readString();
         currency = in.readString();
@@ -155,69 +153,46 @@ public class RestaurantDetails implements Parcelable {
     }
 
   @Override public String toString() {
-    return "RestaurantDetails{"
-        + "id='"
-        + id
-        + '\''
-        + ", name='"
-        + name
-        + '\''
-        + ", url='"
-        + url
-        + '\''
-        + ", location="
+    return id + "\n" + name + "\n"
+
+        + url + "\n"
+
         + location
-        + ", averageCostForTwo='"
-        + averageCostForTwo
-        + '\''
-        + ", priceRange='"
-        + priceRange
-        + '\''
-        + ", currency='"
-        + currency
-        + '\''
-        + ", thumb='"
-        + thumb
-        + '\''
-        + ", featuredImage='"
-        + featuredImage
-        + '\''
-        + ", photosUrl='"
-        + photosUrl
-        + '\''
-        + ", menuUrl='"
-        + menuUrl
-        + '\''
-        + ", eventsUrl='"
-        + eventsUrl
-        + '\''
-        + ", userRating="
+
+        + averageCostForTwo + "\n"
+
+        + priceRange + "\n"
+
+        + currency + "\n"
+
+        + thumb + "\n"
+
+        + featuredImage + "\n"
+
+        + photosUrl + "\n"
+
+        + menuUrl + "\n"
+
+        + eventsUrl + "\n"
+
         + userRating
-        + ", hasOnlineDelivery='"
-        + hasOnlineDelivery
-        + '\''
-        + ", isDeliveringNow='"
-        + isDeliveringNow
-        + '\''
-        + ", hasTableBooking='"
-        + hasTableBooking
-        + '\''
-        + ", deeplink='"
-        + deeplink
-        + '\''
-        + ", cuisines='"
-        + cuisines
-        + '\''
-        + ", allReviewsCount='"
-        + allReviewsCount
-        + '\''
-        + ", photoCount='"
-        + photoCount
-        + '\''
-        + ", phoneNumbers='"
-        + phoneNumbers
-        + '\''
-        + ", allReviews="
+
+        + hasOnlineDelivery + "\n"
+
+        + isDeliveringNow + "\n"
+
+        + hasTableBooking + "\n"
+
+        + deeplink + "\n"
+
+        + cuisines + "\n"
+
+        + allReviewsCount + "\n"
+
+        + photoCount + "\n"
+
+        + phoneNumbers + "\n"
+
         + allReviews
         + '}';
   }

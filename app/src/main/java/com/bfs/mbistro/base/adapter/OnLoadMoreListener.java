@@ -33,6 +33,6 @@ public interface OnLoadMoreListener {
   /**
    * Called when there is more data to load
    */
-  void onLoadMore();
+  void loadNextItems();
 }
 

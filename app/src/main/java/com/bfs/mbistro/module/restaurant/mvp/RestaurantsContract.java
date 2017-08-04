@@ -1,9 +1,13 @@
 package com.bfs.mbistro.module.restaurant.mvp;
 
+import android.location.Location;
+import android.support.annotation.NonNull;
+import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
 import com.bfs.mbistro.base.view.MvpItemView;
 import com.bfs.mbistro.base.view.MvpItemsView;
 import com.bfs.mbistro.model.RestaurantContainer;
+import com.bfs.mbistro.model.location.UserLocation;
 import java.util.List;
 
 public interface RestaurantsContract {
@@ -15,16 +19,26 @@ public interface RestaurantsContract {
 
   interface ItemsView extends MvpItemsView<RestaurantContainer> {
 
+    void showRestaurantsLocation(UserLocation userLocation);
+
+    void showItemsLoadError(Throwable error);
+
+    void showItemsPageLoadError(Throwable error);
+
+    void setMoreItemsAvailable(boolean moreItemsAvailable);
   }
 
-  class Presenter extends BaseListItemPresenter<RestaurantContainer, RowView, ItemsView> {
+  abstract class Presenter extends BaseListItemPresenter<RestaurantContainer, RowView, ItemsView>
+      implements OnLoadMoreListener {
 
-    public Presenter(List<RestaurantContainer> items) {
+    protected Presenter(List<RestaurantContainer> items) {
       super(items);
     }
 
     @Override public void onBindRowViewAtPosition(int position, RowView view) {
       view.showRestaurantRow(getItems().get(position));
     }
+
+    public abstract void loadLocationItems(@NonNull Location location);
   }
 }

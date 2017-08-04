@@ -16,9 +16,7 @@ public class UserRating implements Parcelable {
       return new UserRating[size];
     }
   };
-    @SerializedName("aggregate_rating")
-    @Expose
-    private String aggregateRating;
+    @SerializedName("aggregate_rating") @Expose private float aggregateRating;
     @SerializedName("rating_text")
     @Expose
     private String ratingText;
@@ -30,7 +28,7 @@ public class UserRating implements Parcelable {
     private String votes;
 
     protected UserRating(Parcel in) {
-        aggregateRating = in.readString();
+      aggregateRating = in.readFloat();
         ratingText = in.readString();
         ratingColor = in.readString();
         votes = in.readString();
@@ -43,15 +41,21 @@ public class UserRating implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(aggregateRating);
+      dest.writeFloat(aggregateRating);
         dest.writeString(ratingText);
         dest.writeString(ratingColor);
         dest.writeString(votes);
     }
 
-    @Override
-    public String toString() {
-        return "UserRating{" + "aggregateRating='" + aggregateRating + '\'' + ", ratingText='" + ratingText + '\'' + ", ratingColor='" + ratingColor + '\''
-                + ", votes='" + votes + '\'' + '}';
-    }
+  public float getAggregateRating() {
+    return aggregateRating;
+  }
+
+  public String getVotes() {
+    return votes;
+  }
+
+  public String getRatingColor() {
+    return ratingColor;
+  }
 }

@@ -1,7 +1,6 @@
 package com.bfs.mbistro.location;
 
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -31,8 +30,7 @@ public class AndroidLocationPresenter extends LocationPresenter
   private final LocationConditionsChecker conditionsChecker;
   private final FusedLocationProviderClient fusedLocationClient;
   private final GoogleApiClient googleApiClient;
-  private LocationSettingsResultResultCallback resultCallback;
-  private Location location;
+  private final LocationSettingsResultResultCallback resultCallback;
 
   public AndroidLocationPresenter(LocationConditionsChecker conditionsChecker,
       FragmentActivity activity) {
@@ -119,20 +117,12 @@ public class AndroidLocationPresenter extends LocationPresenter
       requestLocationSettingsChange();
     } else {
       onNewLocationObtained(location);
-      if (!Geocoder.isPresent()) {
-        getView().hideLocationSearchingProgress();
-        getView().showLocationError(
-            activity.getString(R.string.no_geocoder_available));//todo geocoder ?
-      }
     }
-    // Determine whether a Geocoder is available.
-
   }
 
   private void onNewLocationObtained(@NonNull Location newLocation) {
     getView().hideLocationSearchingProgress();
     getView().showFoundLocation(newLocation);
-    this.location = newLocation;
   }
 
   private class GoogleApiConnectionFailedListener

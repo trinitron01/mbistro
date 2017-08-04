@@ -3,7 +3,6 @@
   <string name="location_permission_denied_explanation">Aby zobaczyć lokale w pobliżu zezwól na dostęp do lokalizacji w uprawnieniach</string>
   <string name="location_disabled_explanation">Aby zobaczyć lokale w pobliżu włącz lokalizację po GPS</string>
   <string name="settings">Ustawienia</string>
-  <string name="no_geocoder_available">No geocoder available</string>
   <string name="download_error">Błąd pobierania danych</string>
   <string name="retry">Ponów próbę</string>
   <string name="empty">Empty</string>
@@ -11,4 +10,6 @@
   <string name="error_location_not_found">Lokalizacja nie mogła być znaleziona</string>
   <string name="turn_on_location">Włącz</string>
   <string name="location_search_in_progress">Określanie lokalizacji…</string>
+  <string name="nearby_places">Lokale w okolicy</string>
+  <string name="avg_cost_for_two_item_pattern">Około %1$d %2$s/2 os.</string>
 </resources>

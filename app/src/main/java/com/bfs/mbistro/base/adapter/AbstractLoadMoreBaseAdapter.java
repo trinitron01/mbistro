@@ -105,7 +105,7 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
         && !isLoading
         && loadMoreListener != null) {
       isLoading = true;
-      loadMoreListener.onLoadMore();
+      loadMoreListener.loadNextItems();
     }
 
     if (getItemViewType(position) == VIEW_TYPE_ITEM) {

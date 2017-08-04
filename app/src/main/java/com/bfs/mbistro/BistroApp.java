@@ -1,6 +1,7 @@
 package com.bfs.mbistro;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 import com.bfs.mbistro.crashreporting.CrashlyticsTree;
 import com.bfs.mbistro.di.AppModule;
 import com.bfs.mbistro.di.BistroComponent;
@@ -17,6 +18,7 @@ public class BistroApp extends Application {
 
   @Override public void onCreate() {
     super.onCreate();
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
     File externalCacheDir = getExternalCacheDir();
     File cacheDir = externalCacheDir != null ? externalCacheDir : getCacheDir();
     component = DaggerBistroComponent.builder()

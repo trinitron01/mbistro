@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="windowBackground">#414141</color>
+  <color name="colorPrimary">#19946d</color>
+  <color name="colorPrimaryDark">#006148</color>
+  <color name="colorAccent">#FFC145</color>
+  <color name="actionBarTextColor">#a0c7a9</color>
+  <color name="ratingContainerBackground">#b5585858</color>
+</resources>

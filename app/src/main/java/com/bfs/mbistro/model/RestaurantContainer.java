@@ -21,7 +21,7 @@ public class RestaurantContainer implements NamedItem, Parcelable {
     @Expose
     public Restaurant restaurant;
 
-    protected RestaurantContainer(Parcel in) {
+  private RestaurantContainer(Parcel in) {
         restaurant = in.readParcelable(Restaurant.class.getClassLoader());
     }
 
@@ -30,11 +30,11 @@ public class RestaurantContainer implements NamedItem, Parcelable {
         return restaurant.name;
     }
 
-    public String getId() {
-        return restaurant.id;
-    }
+  public Restaurant getRestaurant() {
+    return restaurant;
+  }
 
-    @Override
+  @Override
     public String toString() {
         return "RestaurantContainer{" + "restaurant=" + restaurant + '}';
     }
