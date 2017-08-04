@@ -2,6 +2,7 @@ package com.bfs.mbistro;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 
 public class JavaUtils {
 
@@ -85,5 +86,9 @@ public class JavaUtils {
         } catch (IOException ignored) {
             // ignore
         }
+    }
+
+    public static boolean isNotNulNorEmpty(List<?> list) {
+        return list != null && !list.isEmpty();
     }
 }

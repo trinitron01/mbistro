@@ -24,6 +24,8 @@ import android.os.Vibrator;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -49,6 +51,23 @@ public class AndroidUtils {
   public static float dipToPixels(Context context, float dipValue) {
     DisplayMetrics metrics = context.getResources().getDisplayMetrics();
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
+  }
+
+  /**
+   * Checks if there is at least one activity to handle provided intent
+   *
+   * @param context the context
+   * @param intent intent with data for which handling activity is searched
+   * @return true if there is activity to handle provided intent, false otherwise
+   */
+  public static boolean hasActivityToStartIntent(@NonNull Context context,
+      @Nullable Intent intent) {
+    if (intent != null) {
+      PackageManager manager = context.getPackageManager();
+      List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+      return !infos.isEmpty();
+    }
+    return false;
   }
 
   public static void setTextOrHideIfEmpty(CharSequence text, TextView view) {
