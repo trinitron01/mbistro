@@ -148,4 +148,8 @@ public class RestaurantDetails implements Parcelable {
   public String getCuisines() {
     return cuisines;
   }
+
+  public UserRating getUserRating() {
+    return userRating;
+  }
 }

@@ -17,6 +17,7 @@ import com.bfs.mbistro.Intents;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.model.DetailsReviewResponse;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantDetailsContract;
+import com.bfs.mbistro.module.restaurant.rating.RestaurantRatingView;
 import com.bfs.mbistro.network.ApiService;
 import com.hannesdorfmann.mosby3.mvp.viewstate.lce.LceViewState;
 import com.hannesdorfmann.mosby3.mvp.viewstate.lce.MvpLceViewStateFragment;
@@ -36,6 +37,7 @@ public class RestaurantDetailsFragment extends
   private TextView distance;
   private TextView cuisinesLabel;
   private FloatingActionButton navigationFab;
+  private RestaurantRatingView ratingView;
   private String restaurantName;
   private DetailsReviewResponse data;
 
@@ -71,6 +73,7 @@ public class RestaurantDetailsFragment extends
     presenter.attachView(this);
     distance = (TextView) view.findViewById(R.id.restaurant_distance);
     cuisinesLabel = (TextView) view.findViewById(R.id.restaurant_cuisines);
+    ratingView = (RestaurantRatingView) view.findViewById(R.id.details_rating_view);
 
     final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
     getAppCompatActivity().setSupportActionBar(toolbar);
@@ -89,6 +92,7 @@ public class RestaurantDetailsFragment extends
     distance = null;
     cuisinesLabel = null;
     navigationFab = null;
+    ratingView = null;
     super.onDestroyView();
   }
 
@@ -114,6 +118,7 @@ public class RestaurantDetailsFragment extends
     if (data.restaurant.getLocation() != null) {
       navigationFab.setVisibility(View.VISIBLE);
     }
+    ratingView.setRating(data.restaurant.getUserRating());
   }
 
   @Override public void onClick(View v) {

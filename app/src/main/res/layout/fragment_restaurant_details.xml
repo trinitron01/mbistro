@@ -81,6 +81,12 @@
           style="@style/TextAppearance.AppCompat.Subhead"
           />
 
+      <com.bfs.mbistro.module.restaurant.rating.RestaurantRatingView
+          android:id="@+id/details_rating_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          />
+
 
     </LinearLayout>
 
