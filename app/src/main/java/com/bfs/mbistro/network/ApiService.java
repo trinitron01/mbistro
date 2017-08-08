@@ -14,13 +14,14 @@ public interface ApiService {
 
   String LATITUDE = "lat";
   String LONGITUDE = "lon";
-  
+  String RESOURCE_ID = "res_id";
+
   @GET("search") Observable<Restaurants> getRestaurants(@Query("entity_id") int cityId,
       @Query("entity_type") String type, @Query("start") int startOffset,
       @Query("count") int count);
 
   @GET("restaurant") Observable<RestaurantDetails> getRestaurant(
-      @Query("res_id") String restaurantId);
+      @Query(RESOURCE_ID) String restaurantId);
 
   @GET("reviews") Observable<ReviewsResponse> getReviews(@Query("res_id") String restaurantId);
 
