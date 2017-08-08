@@ -4,17 +4,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 
+import static com.bfs.mbistro.Strings.EMPTY_STRING;
+
 public class JavaUtils {
 
-    public static final String UTF_8 = "UTF-8";
-    public static final String EMPTY_STRING = "";
 
-    public static final String DASH = " - ";
-    public static final String SPACE = " ";
-
-    public static final String DOTS_3 = "...";
-
-    public static final String NEXT_LINE = "\n";
 
     public static final int HASH_CODE_31 = 31;
 
@@ -41,7 +35,7 @@ public class JavaUtils {
     }
 
     public static String getEmptyWhenNull(String text) {
-        return isNullOrEmptyString(text) ? JavaUtils.EMPTY_STRING : text;
+      return isNullOrEmptyString(text) ? EMPTY_STRING : text;
     }
 
     public static boolean isNullOrEmptyString(CharSequence text) {

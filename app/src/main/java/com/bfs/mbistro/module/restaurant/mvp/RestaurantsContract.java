@@ -1,7 +1,5 @@
 package com.bfs.mbistro.module.restaurant.mvp;
 
-import android.location.Location;
-import android.support.annotation.NonNull;
 import com.bfs.mbistro.base.adapter.OnLoadMoreListener;
 import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
 import com.bfs.mbistro.base.view.MvpItemView;
@@ -39,6 +37,6 @@ public interface RestaurantsContract {
       view.showRestaurantRow(getItems().get(position));
     }
 
-    public abstract void loadLocationItems(@NonNull Location location);
+    public abstract void loadLocationItems(double latitude, double longitude);
   }
 }

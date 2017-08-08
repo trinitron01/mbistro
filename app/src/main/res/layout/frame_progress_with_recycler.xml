@@ -10,7 +10,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:visibility="gone"
       />
 
   <include layout="@layout/error_text"/>
@@ -20,9 +19,9 @@
       android:id="@id/contentView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:visibility="gone"
       tools:appContext="com.bfs.mbistro.module.restaurant.list.RestaurantsActivity"
-      tools:showIn="@layout/activity_list"
-
+      tools:showIn="@layout/restaurant_list"
       />
 
 </FrameLayout>

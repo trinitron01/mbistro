@@ -21,16 +21,19 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnSuccessListener;
+import java.util.concurrent.TimeUnit;
 import timber.log.Timber;
 
 public class AndroidLocationPresenter extends LocationPresenter
     implements OnSuccessListener<Location> {
+
 
   private final FragmentActivity activity;
   private final LocationConditionsChecker conditionsChecker;
   private final FusedLocationProviderClient fusedLocationClient;
   private final GoogleApiClient googleApiClient;
   private final LocationSettingsResultResultCallback resultCallback;
+  private long lastLocationTimestampMillis;
 
   public AndroidLocationPresenter(LocationConditionsChecker conditionsChecker,
       FragmentActivity activity) {
@@ -62,6 +65,12 @@ public class AndroidLocationPresenter extends LocationPresenter
     } else {
       getView().askForLocationPermissions();
     }
+  }
+
+  @Override public boolean isLocationOutdated() {
+    return lastLocationTimestampMillis == 0
+        || TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastLocationTimestampMillis)
+        > AndroidLocationPresenter.LOCATION_REQUEST_INTERVAL_MINUTES;
   }
 
   @Override public void onPermissionRequestCompleted(int[] grantResults) {
@@ -116,11 +125,12 @@ public class AndroidLocationPresenter extends LocationPresenter
     if (location == null) {
       requestLocationSettingsChange();
     } else {
-      onNewLocationObtained(location);
+      onLocationObtained(location);
     }
   }
 
-  private void onNewLocationObtained(@NonNull Location newLocation) {
+  private void onLocationObtained(@NonNull Location newLocation) {
+    lastLocationTimestampMillis = System.currentTimeMillis();
     getView().hideLocationSearchingProgress();
     getView().showFoundLocation(newLocation);
   }
@@ -173,7 +183,7 @@ public class AndroidLocationPresenter extends LocationPresenter
     @Override public void onLocationResult(LocationResult locationResult) {
       super.onLocationResult(locationResult);
       if (locationResult.getLastLocation() != null) {
-        onNewLocationObtained(locationResult.getLastLocation());
+        onLocationObtained(locationResult.getLastLocation());
         fusedLocationClient.removeLocationUpdates(this);
       } else {
         getView().showLocationError(activity.getString(R.string.error_location_not_found));

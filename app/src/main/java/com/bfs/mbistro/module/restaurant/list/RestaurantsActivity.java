@@ -13,8 +13,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import com.bfs.mbistro.AndroidUtils;
 import com.bfs.mbistro.BuildConfig;
+import com.bfs.mbistro.LocationUtils;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.BaseActivity;
 import com.bfs.mbistro.di.BistroComponent;
@@ -24,23 +24,32 @@ import com.bfs.mbistro.location.LocationConditionsView;
 import com.google.android.gms.common.api.Status;
 import timber.log.Timber;
 
+import static com.bfs.mbistro.AndroidUtils.dismissSnackbar;
+import static com.bfs.mbistro.AndroidUtils.isFragmentAlive;
+
 public class RestaurantsActivity extends BaseActivity implements LocationConditionsView {
 
-  public static final int REQUEST_LOCATION = 10002;
-  private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 111;
+  public static final int REQUEST_CODE_LOCATION_SETTINGS = 101;
+  private static final int REQUEST_CODE_LOCATION_PERMISSIONS = 102;
+  private static final String USER_LOCATION_KEY = "USER_LOCATION_KEY";
+  private static final int DISTANCE_DIFF_THRESHOLD_METERS = 500;
 
   private AndroidLocationPresenter locationPresenter;
   private Snackbar locationSnackbar;
+  private Location lastLocation;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_list);
+    setContentView(R.layout.restaurant_list);
     Toolbar toolbar = findView(R.id.toolbar);
     setSupportActionBar(toolbar);
 
     locationPresenter =
         new AndroidLocationPresenter(new AndroidLocationConditionsChecker(this), this);
     locationPresenter.attachView(this);
+    if (savedInstanceState != null && savedInstanceState.containsKey(USER_LOCATION_KEY)) {
+      lastLocation = savedInstanceState.getParcelable(USER_LOCATION_KEY);
+    }
   }
 
   @Override protected void inject(BistroComponent component) {
@@ -49,7 +58,16 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
 
   @Override public void onStart() {
     super.onStart();
-    locationPresenter.checkSettingsAndRequestLocation();
+    if (locationPresenter.isLocationOutdated()) {
+      locationPresenter.checkSettingsAndRequestLocation();
+    }
+  }
+
+  @Override public void onSaveInstanceState(Bundle outState) {
+    if (lastLocation != null) {
+      outState.putParcelable(USER_LOCATION_KEY, lastLocation);
+    }
+    super.onSaveInstanceState(outState);
   }
 
   /**
@@ -80,14 +98,14 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
    */
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
-    if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+    if (requestCode == REQUEST_CODE_LOCATION_PERMISSIONS) {
       locationPresenter.onPermissionRequestCompleted(grantResults);
     }
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == REQUEST_LOCATION) {
+    if (requestCode == REQUEST_CODE_LOCATION_SETTINGS) {
       locationPresenter.onLocationSettingsChanged(resultCode == Activity.RESULT_OK);
     }
   }
@@ -96,16 +114,23 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
     try {
       // Show the dialog by calling startResolutionForResult(),
       // and check the result in onActivityResult().
-      locationSettingsStatus.startResolutionForResult(RestaurantsActivity.this, REQUEST_LOCATION);
+      locationSettingsStatus.startResolutionForResult(RestaurantsActivity.this,
+          REQUEST_CODE_LOCATION_SETTINGS);
     } catch (IntentSender.SendIntentException e) {
       Timber.e(e);
     }
   }
 
+  private boolean locationChangedEnough(Location location) {
+    return LocationUtils.distanceBetweenMeters(lastLocation.getLatitude(),
+        lastLocation.getLongitude(), location.getLatitude(), location.getLongitude())
+        > DISTANCE_DIFF_THRESHOLD_METERS;
+  }
+
   @Override public void askForLocationPermissions() {
     ActivityCompat.requestPermissions(this,
         new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-        REQUEST_PERMISSIONS_REQUEST_CODE);
+        REQUEST_CODE_LOCATION_PERMISSIONS);
   }
 
   @Override public void showLocationSearchingProgress() {
@@ -118,20 +143,20 @@ public class RestaurantsActivity extends BaseActivity implements LocationConditi
   }
 
   @Override public void hideLocationSearchingProgress() {
-    if (locationSnackbar != null && locationSnackbar.isShown()) {
-      locationSnackbar.dismiss();
-    }
+    dismissSnackbar(locationSnackbar);
   }
 
   @Override public void showFoundLocation(Location location) {
-    if (locationSnackbar != null && locationSnackbar.isShown()) {
-      locationSnackbar.dismiss();
-    }
+    dismissSnackbar(locationSnackbar);
     RestaurantsFragment restaurantsFragment =
         (RestaurantsFragment) getSupportFragmentManager().findFragmentById(
             R.id.restaurants_fragment);
-    if (AndroidUtils.isFragmentAlive(restaurantsFragment)) {
-      restaurantsFragment.onNewLocation(location);
+
+    if (isFragmentAlive(restaurantsFragment)) {
+      if (lastLocation == null || locationChangedEnough(location)) {
+        restaurantsFragment.onNewLocation(location.getLatitude(), location.getLongitude());
+        lastLocation = location;
+      }
     } else {
       Timber.w("UserLocation changed but RestaurantsFragment is no longer alive");
     }

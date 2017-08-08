@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import java.util.List;
 
 public class RestaurantDetails implements Parcelable {
 
@@ -69,18 +68,12 @@ public class RestaurantDetails implements Parcelable {
     @SerializedName("cuisines")
     @Expose
     private String cuisines;
-    @SerializedName("all_reviews_count")
-    @Expose
-    private String allReviewsCount;
     @SerializedName("photo_count")
     @Expose
     private String photoCount;
     @SerializedName("phone_numbers")
     @Expose
     private String phoneNumbers;
-    @SerializedName("all_reviews")
-    @Expose
-    private List<AllReview> allReviews = null;
 
     protected RestaurantDetails(Parcel in) {
         id = in.readString();
@@ -100,10 +93,8 @@ public class RestaurantDetails implements Parcelable {
         hasTableBooking = in.readString();
         deeplink = in.readString();
         cuisines = in.readString();
-        allReviewsCount = in.readString();
         photoCount = in.readString();
         phoneNumbers = in.readString();
-        allReviews = in.createTypedArrayList(AllReview.CREATOR);
     }
 
     public String getId() {
@@ -146,54 +137,15 @@ public class RestaurantDetails implements Parcelable {
         dest.writeString(hasTableBooking);
         dest.writeString(deeplink);
         dest.writeString(cuisines);
-        dest.writeString(allReviewsCount);
         dest.writeString(photoCount);
         dest.writeString(phoneNumbers);
-        dest.writeTypedList(allReviews);
     }
 
-  @Override public String toString() {
-    return id + "\n" + name + "\n"
+  public RestaurantLocation getLocation() {
+    return location;
+  }
 
-        + url + "\n"
-
-        + location
-
-        + averageCostForTwo + "\n"
-
-        + priceRange + "\n"
-
-        + currency + "\n"
-
-        + thumb + "\n"
-
-        + featuredImage + "\n"
-
-        + photosUrl + "\n"
-
-        + menuUrl + "\n"
-
-        + eventsUrl + "\n"
-
-        + userRating
-
-        + hasOnlineDelivery + "\n"
-
-        + isDeliveringNow + "\n"
-
-        + hasTableBooking + "\n"
-
-        + deeplink + "\n"
-
-        + cuisines + "\n"
-
-        + allReviewsCount + "\n"
-
-        + photoCount + "\n"
-
-        + phoneNumbers + "\n"
-
-        + allReviews
-        + '}';
+  public String getCuisines() {
+    return cuisines;
   }
 }

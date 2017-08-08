@@ -12,4 +12,9 @@
   <string name="location_search_in_progress">Określanie lokalizacji…</string>
   <string name="nearby_places">Lokale w okolicy</string>
   <string name="avg_cost_for_two_item_pattern">Około %1$d %2$s/2 os.</string>
+  <string name="title_navigate_to">Nawiguj</string>
+  <string name="title_show_on_map">Pokaż na mapie</string>
+  <string name="no_navigation_intent_map_available">Nie znaleziono aplikacji do obsługi nawigacji do lokalu</string>
+  <string name="distance_subtitle_pattern">ok. %.1f km od Ciebie</string>
+  <string name="cuisines_label">Kuchnie:</string>
 </resources>

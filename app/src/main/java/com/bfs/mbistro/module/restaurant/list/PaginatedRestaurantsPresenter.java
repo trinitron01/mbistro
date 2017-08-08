@@ -1,7 +1,5 @@
 package com.bfs.mbistro.module.restaurant.list;
 
-import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
@@ -18,13 +16,13 @@ import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
 
   private static final String ENTITY_TYPE_CITY = "city";
-  //todo chyba mozna pl wywalic
-  private static final String LANGUAGE_PL = "pl";
+
   //API restrictions - max 100 results per search query
   private static final int ITEMS_PAGE_LIMIT = 20;
   private static final int MAX_ITEMS = 100;
@@ -33,6 +31,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
   private int itemsShown;
   private int itemsStartIndex;
   private Integer cityId;
+  private CompositeSubscription compositeSubscription;
 
   PaginatedRestaurantsPresenter(ApiService service, List<RestaurantContainer> items) {
     super(items);
@@ -51,6 +50,11 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
     }
   }
 
+  @Override public void attachView(RestaurantsContract.ItemsView view) {
+    super.attachView(view);
+    compositeSubscription = new CompositeSubscription();
+  }
+
   private void updateOffset(int resultsShown, int resultsStart) {
     this.itemsShown += resultsShown;
     this.itemsStartIndex = resultsStart;
@@ -60,23 +64,24 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
 
   @Override public void loadNextItems() {
     if (cityId != null) {
-      service.getRestaurants(cityId, ENTITY_TYPE_CITY, LANGUAGE_PL, itemsShown, ITEMS_PAGE_LIMIT)
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new RestaurantsPageSubscriber());
+      compositeSubscription.add(
+          service.getRestaurants(cityId, ENTITY_TYPE_CITY, itemsShown, ITEMS_PAGE_LIMIT)
+              .subscribeOn(Schedulers.io())
+              .observeOn(AndroidSchedulers.mainThread())
+              .subscribe(new RestaurantsPageSubscriber()));
     } else {
       throw new IllegalStateException("Requested more items but city Id has not been set yet");
     }
   }
 
-  @Override public void loadLocationItems(@NonNull Location location) {
+  @Override public void loadLocationItems(double latitude, double longitude) {
     itemsShown = 0;
     itemsStartIndex = 0;
-    service.geocode(location.getLatitude(), location.getLongitude(), LANGUAGE_PL)
+    compositeSubscription.add(service.geocode(latitude, longitude)
         .flatMap(new Func1<UserLocation, Observable<Restaurants>>() {
           @Override public Observable<Restaurants> call(UserLocation geocodedLocation) {
             return service.getRestaurants(geocodedLocation.getLocation().getCityId(),
-                ENTITY_TYPE_CITY, LANGUAGE_PL, itemsShown, ITEMS_PAGE_LIMIT);
+                ENTITY_TYPE_CITY, itemsShown, ITEMS_PAGE_LIMIT);
           }
         }, new Func2<UserLocation, Restaurants, Pair<UserLocation, List<RestaurantContainer>>>() {
           @Override public Pair<UserLocation, List<RestaurantContainer>> call(
@@ -92,7 +97,12 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
           }
         })
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new PaginatedListWithLocationSubscriber());
+        .subscribe(new PaginatedListWithLocationSubscriber()));
+  }
+
+  @Override public void detachView(boolean retainInstance) {
+    super.detachView(retainInstance);
+    compositeSubscription.unsubscribe();
   }
 
   private class PaginatedListWithLocationSubscriber

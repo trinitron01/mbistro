@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 import java.math.BigDecimal;
@@ -80,41 +81,55 @@ public class Intents {
     context.startActivity(intent);
   }
 
-  public static void makeMaps(Activity activity, BigDecimal lat, BigDecimal lng, String address) {
+  public static void showOnMap(Activity activity, BigDecimal lat, BigDecimal lng, String address,
+      NoAvailableComponentListener listener) {
     if (lat != null && lng != null) {
-      makeMaps(activity, lat.doubleValue(), lng.doubleValue(), address);
+      showOnMap(activity, lat.doubleValue(), lng.doubleValue(), address, listener);
     }
   }
 
-  private static void makeMaps(Activity activity, double lat, double lng, String address) {
+  public static void showOnMap(Context context, double lat, double lng, String address,
+      @Nullable NoAvailableComponentListener listener) {
     Uri browser = Uri.parse("http://maps.google.com/maps?q=" + address + "@" + lat + "," + lng);
-    activity.startActivity(new Intent(Intent.ACTION_VIEW, browser));
+    Intent intent = new Intent(Intent.ACTION_VIEW, browser);
+    Intent chooser = Intent.createChooser(intent, context.getString(R.string.title_show_on_map));
+    if (intent.resolveActivity(context.getPackageManager()) != null) {
+      context.startActivity(chooser);
+    } else {
+      listener.onComponentUnavailable(intent);
+    }
   }
 
-  public static void showNavigation(Context context, BigDecimal latitude, BigDecimal longitude,
-      String label) {
+  public static void showNavigation(Context context, double latitude, double longitude,
+      String label, @Nullable NoAvailableComponentListener listener) {
     final String navigationBaseQuery = "google.navigation:q=";
     String address = null;
-    if (latitude == null
-        || longitude == null
-        || latitude.signum() == 0 && longitude.signum() == 0) {
+    if (latitude == 0 || longitude == 0) {
       if (!TextUtils.isEmpty(label)) {
         address = String.format("%1$s", label);
       }
     } else {
-      /**
-       * The Google Map app works only with English format for coordinates (ex: 39.214, 47.3214).
-       * German format uses ',' instead of '.' that's why we should specify the locale here.
+      /*
+        The Google Map app works only with English format for coordinates (ex: 39.214, 47.3214).
+        German format uses ',' instead of '.' that's why we should specify the locale here.
        */
-      address = String.format(Locale.ENGLISH, "%1$f, %2$f", latitude.doubleValue(),
-          longitude.doubleValue());
+      address = String.format(Locale.ENGLISH, "%1$f, %2$f", latitude, longitude);
     }
     if (address != null) {
       Uri uri = Uri.parse(navigationBaseQuery + address);
       Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-      if (AndroidUtils.hasActivityToStartIntent(context, intent)) {
-        context.startActivity(intent);
+
+      Intent chooser = Intent.createChooser(intent, context.getString(R.string.title_navigate_to));
+      if (intent.resolveActivity(context.getPackageManager()) != null) {
+        context.startActivity(chooser);
+      } else {
+        listener.onComponentUnavailable(intent);
       }
     }
+  }
+
+  public interface NoAvailableComponentListener {
+
+    void onComponentUnavailable(Intent unsupportedIntent);
   }
 }

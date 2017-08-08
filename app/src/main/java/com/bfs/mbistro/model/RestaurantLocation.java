@@ -22,8 +22,8 @@ public class RestaurantLocation implements Parcelable {
   @SerializedName("address") @Expose private String address;
   @SerializedName("locality") @Expose private String locality;
   @SerializedName("city") @Expose private String city;
-  @SerializedName("latitude") @Expose private String latitude;
-  @SerializedName("longitude") @Expose private String longitude;
+  @SerializedName("latitude") @Expose private double latitude;
+  @SerializedName("longitude") @Expose private double longitude;
   @SerializedName("zipcode") @Expose private String zipcode;
   @SerializedName("country_id") @Expose private String countryId;
 
@@ -36,8 +36,8 @@ public class RestaurantLocation implements Parcelable {
     this.address = in.readString();
     this.locality = in.readString();
     this.city = in.readString();
-    this.latitude = in.readString();
-    this.longitude = in.readString();
+    this.latitude = in.readDouble();
+    this.longitude = in.readDouble();
     this.zipcode = in.readString();
     this.countryId = in.readString();
   }
@@ -52,9 +52,17 @@ public class RestaurantLocation implements Parcelable {
     dest.writeString(this.address);
     dest.writeString(this.locality);
     dest.writeString(this.city);
-    dest.writeString(this.latitude);
-    dest.writeString(this.longitude);
+    dest.writeDouble(this.latitude);
+    dest.writeDouble(this.longitude);
     dest.writeString(this.zipcode);
     dest.writeString(this.countryId);
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
   }
 }

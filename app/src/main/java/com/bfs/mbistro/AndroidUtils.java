@@ -60,8 +60,7 @@ public class AndroidUtils {
    * @param intent intent with data for which handling activity is searched
    * @return true if there is activity to handle provided intent, false otherwise
    */
-  public static boolean hasActivityToStartIntent(@NonNull Context context,
-      @Nullable Intent intent) {
+  static boolean hasActivityToStartIntent(@NonNull Context context, @Nullable Intent intent) {
     if (intent != null) {
       PackageManager manager = context.getPackageManager();
       List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
@@ -292,6 +291,16 @@ public class AndroidUtils {
   }
 
   /**
+   * Shows a {@link Snackbar}.
+   *
+   * @param mainTextStringId The id for the string resource for the Snackbar text.
+   */
+  public static void showShortSnackbar(Activity activity, final int mainTextStringId) {
+    Snackbar.make(activity.findViewById(android.R.id.content), activity.getString(mainTextStringId),
+        Snackbar.LENGTH_SHORT).show();
+  }
+
+  /**
    * Carries out (lollipop-compliant) backwards compatible tinting that also includes wrapping the
    * drawable.
    *
@@ -325,5 +334,11 @@ public class AndroidUtils {
   public static VectorDrawableCompat getVectorDrawable(@DrawableRes int drawableId,
       Context context) {
     return VectorDrawableCompat.create(context.getResources(), drawableId, context.getTheme());
+  }
+
+  public static void dismissSnackbar(@Nullable Snackbar snackbar) {
+    if (snackbar != null && snackbar.isShown()) {
+      snackbar.dismiss();
+    }
   }
 }
