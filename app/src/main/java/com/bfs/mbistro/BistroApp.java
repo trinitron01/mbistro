@@ -7,14 +7,13 @@ import com.bfs.mbistro.di.AppModule;
 import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.di.BistroServiceModule;
 import com.bfs.mbistro.di.DaggerBistroComponent;
-import com.bfs.mbistro.network.AndroidNetworkMonitor;
 import java.io.File;
 import timber.log.Timber;
 
 public class BistroApp extends Application {
 
   private static final String BASE_URL = "https://developers.zomato.com/api/v2.1/";
-  public BistroComponent component;
+  private BistroComponent component;
 
   @Override public void onCreate() {
     super.onCreate();
@@ -22,14 +21,17 @@ public class BistroApp extends Application {
     File externalCacheDir = getExternalCacheDir();
     File cacheDir = externalCacheDir != null ? externalCacheDir : getCacheDir();
     component = DaggerBistroComponent.builder()
-        .bistroServiceModule(
-            new BistroServiceModule(BASE_URL, cacheDir, new AndroidNetworkMonitor(this)))
         .appModule(new AppModule(this))
+        .bistroServiceModule(new BistroServiceModule(BASE_URL, cacheDir))
         .build();
 
     if (BuildConfig.DEBUG) {
       Timber.plant(new Timber.DebugTree());
     }
     Timber.plant(new CrashlyticsTree());
+  }
+
+  public BistroComponent getComponent() {
+    return component;
   }
 }

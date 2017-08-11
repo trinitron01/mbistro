@@ -4,6 +4,9 @@
   <string name="location_disabled_explanation">Aby zobaczyć lokale w pobliżu włącz lokalizację po GPS</string>
   <string name="settings">Ustawienia</string>
   <string name="download_error">Błąd pobierania danych</string>
+  <string name="download_error_click_to_refresh">Błąd pobierania danych \nKliknij, by spróbować ponownie</string>
+  <string name="internet_connection_unavailable_error">Brak połączenia z internetem</string>
+  <string name="internet_connection_unavailable_error_click_to_retry">Brak połączenia z internetem \nKliknij, by spróbować ponownie</string>
   <string name="retry">Ponów próbę</string>
   <string name="empty">Empty</string>
   <string name="google_play_api_client_connection_failed">Nie udało się połączyć z usługami Google Play</string>
@@ -17,4 +20,6 @@
   <string name="no_navigation_intent_map_available">Nie znaleziono aplikacji do obsługi nawigacji do lokalu</string>
   <string name="distance_subtitle_pattern">ok. %.1f km od Ciebie</string>
   <string name="cuisines_label">Kuchnie:</string>
+  <string name="title_activity_maps">@string/nearby_places</string>
+  <string name="switch_to_map_label">Zobacz na mapie</string>
 </resources>

@@ -20,6 +20,9 @@ public interface ApiService {
       @Query("entity_type") String type, @Query("start") int startOffset,
       @Query("count") int count);
 
+  @GET("search") Observable<Restaurants> getRestaurants(@Query(LATITUDE) double lat,
+      @Query(LONGITUDE) double longitude);
+
   @GET("restaurant") Observable<RestaurantDetails> getRestaurant(
       @Query(RESOURCE_ID) String restaurantId);
 

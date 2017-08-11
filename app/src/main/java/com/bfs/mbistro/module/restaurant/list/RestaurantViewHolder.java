@@ -9,7 +9,7 @@ import com.bfs.mbistro.model.Restaurant;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.module.restaurant.rating.RestaurantRatingView;
 
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RowView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract.RowView;
 
 class RestaurantViewHolder extends BaseViewHolder implements RowView, View.OnClickListener {
 

@@ -1,6 +1,6 @@
 package com.bfs.mbistro.location;
 
-interface LocationConditionsChecker {
+public interface LocationPermissionsChecker {
 
   boolean areLocationPermissionsGranted();
 }

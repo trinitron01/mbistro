@@ -30,6 +30,7 @@ android {
     vectorDrawables.useSupportLibrary = true
   }
   buildTypes {
+
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -64,5 +65,6 @@ dependencies {
 
   compile "com.google.android.gms:play-services-places:$rootProject.playServicesVersion"
   compile "com.google.android.gms:play-services-location:$rootProject.playServicesVersion"
+  compile "com.google.android.gms:play-services-maps:$rootProject.playServicesVersion"
   compile "com.jakewharton.timber:timber:$rootProject.timberVersion"
 }

@@ -19,28 +19,26 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@Module public class BistroServiceModule {
+@Module(includes = AppModule.class) public class BistroServiceModule {
 
   private static final int RESPONSE_CACHE_SIZE = 10 * 1024 * 1024;
   private final String baseUrl;
   private final File cacheDir;
-  private final NetworkMonitor networkMonitor;
   private final boolean useCache = true;
 
-  public BistroServiceModule(String baseUrl, File cacheDir, NetworkMonitor networkMonitor) {
+  public BistroServiceModule(String baseUrl, File cacheDir) {
     this.baseUrl = baseUrl;
     this.cacheDir = cacheDir;
-    this.networkMonitor = networkMonitor;
   }
 
   @Provides @Singleton GsonConverterFactory provideGsonConverter() {
     return GsonConverterFactory.create(new GsonBuilder().create());
   }
 
-  @Provides @Singleton OkHttpClient provideOkHttpClient() {
+  @Provides @Singleton OkHttpClient provideOkHttpClient(NetworkMonitor networkMonitor) {
     return new OkHttpClient.Builder().cache(new Cache(cacheDir, RESPONSE_CACHE_SIZE))
-        .addInterceptor(new OfflineInterceptor())
-        .addNetworkInterceptor(new NetworkInterceptor())
+        .addInterceptor(new OfflineInterceptor(networkMonitor))
+        .addNetworkInterceptor(new NetworkInterceptor(networkMonitor))
         .build();
   }
 
@@ -59,6 +57,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
   private class NetworkInterceptor implements Interceptor {
 
+    public static final int RESPONSE_CACHE_TIME_MINUTES = 60;
+    private final NetworkMonitor networkMonitor;
+
+    NetworkInterceptor(NetworkMonitor networkMonitor) {
+      this.networkMonitor = networkMonitor;
+    }
+
     @Override public Response intercept(Chain chain) throws IOException {
       Request request = chain.request();
       Request.Builder builder = request.newBuilder();
@@ -73,7 +78,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
         return response.newBuilder()
             .removeHeader("Pragma")
             .removeHeader("Cache-Control")
-            .header("Cache-Control", "max-age=" + TimeUnit.MINUTES.toSeconds(60))
+            .header("Cache-Control",
+                "max-age=" + TimeUnit.MINUTES.toSeconds(RESPONSE_CACHE_TIME_MINUTES))
             .build();
       } else {
         return response;
@@ -82,6 +88,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
   }
 
   private class OfflineInterceptor implements Interceptor {
+
+    private final NetworkMonitor networkMonitor;
+
+    OfflineInterceptor(NetworkMonitor networkMonitor) {
+
+      this.networkMonitor = networkMonitor;
+    }
 
     @Override public Response intercept(Chain chain) throws IOException {
       Request request = chain.request();

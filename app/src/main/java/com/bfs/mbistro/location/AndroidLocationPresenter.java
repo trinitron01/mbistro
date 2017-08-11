@@ -21,22 +21,20 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnSuccessListener;
-import java.util.concurrent.TimeUnit;
 import timber.log.Timber;
 
 public class AndroidLocationPresenter extends LocationPresenter
     implements OnSuccessListener<Location> {
 
-
   private final FragmentActivity activity;
-  private final LocationConditionsChecker conditionsChecker;
+  private final LocationPermissionsChecker conditionsChecker;
   private final FusedLocationProviderClient fusedLocationClient;
   private final GoogleApiClient googleApiClient;
   private final LocationSettingsResultResultCallback resultCallback;
-  private long lastLocationTimestampMillis;
 
-  public AndroidLocationPresenter(LocationConditionsChecker conditionsChecker,
-      FragmentActivity activity) {
+  public AndroidLocationPresenter(LocationPermissionsChecker conditionsChecker,
+      FragmentActivity activity, Location lastLocation) {
+    super(lastLocation);
     this.conditionsChecker = conditionsChecker;
     this.activity = activity;
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
@@ -65,12 +63,6 @@ public class AndroidLocationPresenter extends LocationPresenter
     } else {
       getView().askForLocationPermissions();
     }
-  }
-
-  @Override public boolean isLocationOutdated() {
-    return lastLocationTimestampMillis == 0
-        || TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastLocationTimestampMillis)
-        > AndroidLocationPresenter.LOCATION_REQUEST_INTERVAL_MINUTES;
   }
 
   @Override public void onPermissionRequestCompleted(int[] grantResults) {
@@ -127,12 +119,6 @@ public class AndroidLocationPresenter extends LocationPresenter
     } else {
       onLocationObtained(location);
     }
-  }
-
-  private void onLocationObtained(@NonNull Location newLocation) {
-    lastLocationTimestampMillis = System.currentTimeMillis();
-    getView().hideLocationSearchingProgress();
-    getView().showFoundLocation(newLocation);
   }
 
   private class GoogleApiConnectionFailedListener

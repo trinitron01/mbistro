@@ -4,7 +4,7 @@ import android.support.v4.util.Pair;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
 import com.bfs.mbistro.model.location.UserLocation;
-import com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract;
+import com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract;
 import com.bfs.mbistro.network.ApiService;
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
+class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
 
   private static final String ENTITY_TYPE_CITY = "city";
 
@@ -38,19 +38,19 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
     this.service = service;
   }
 
-  private static void logException(Throwable error) {
+  private static void logException(Throwable error, final String errorTag) {
     if (error instanceof HttpException) {
       HttpException httpException = (HttpException) error;
       try {
-        Timber.w("Paginated List loading error " + httpException.response().errorBody().string());
+        Timber.w(errorTag + " loading error " + httpException.response().errorBody().string());
       } catch (IOException e) {
-        Timber.w("Paginated List loading error ");
+        Timber.w(errorTag + " loading error ");
         e.printStackTrace();
       }
     }
   }
 
-  @Override public void attachView(RestaurantsContract.ItemsView view) {
+  @Override public void attachView(RestaurantsListContract.ItemsView view) {
     super.attachView(view);
     compositeSubscription = new CompositeSubscription();
   }
@@ -93,7 +93,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
         .subscribeOn(Schedulers.io())
         .doOnSubscribe(new Action0() {
           @Override public void call() {
-            getView().showProgress();
+            getView().showLoading(false);
           }
         })
         .observeOn(AndroidSchedulers.mainThread())
@@ -116,13 +116,13 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
     }
 
     @Override public void onError(Throwable error) {
-      logException(error);
-      getView().showItemsLoadError(error);
+      logException(error, "Restaurant List For Location");
+      getView().showError(error, false);
     }
 
     @Override
     public void onNext(Pair<UserLocation, List<RestaurantContainer>> userLocationListPair) {
-      RestaurantsContract.ItemsView restaurantsView = getView();
+      RestaurantsListContract.ItemsView restaurantsView = getView();
       cityId = userLocationListPair.first.getLocation().getCityId();
       restaurantsView.showRestaurantsLocation(userLocationListPair.first);
       onNewItems(userLocationListPair.second, true);
@@ -136,7 +136,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsContract.Presenter {
     }
 
     @Override public void onError(Throwable error) {
-      logException(error);
+      logException(error, "Paginated List");
       getView().showItemsPageLoadError(error);
     }
 

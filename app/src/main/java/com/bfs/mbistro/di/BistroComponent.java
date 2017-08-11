@@ -1,5 +1,7 @@
 package com.bfs.mbistro.di;
 
+import com.bfs.mbistro.module.map.RestaurantsMapActivity;
+import com.bfs.mbistro.module.map.RestaurantsMapFragment;
 import com.bfs.mbistro.module.restaurant.details.ui.RestaurantDetailsActivity;
 import com.bfs.mbistro.module.restaurant.details.ui.RestaurantDetailsFragment;
 import com.bfs.mbistro.module.restaurant.list.RestaurantsActivity;
@@ -17,4 +19,10 @@ public interface BistroComponent {
   void inject(RestaurantsFragment fragment);
 
   void inject(RestaurantDetailsFragment fragment);
+
+  void inject(RestaurantsMapActivity restaurantsMapActivity);
+
+  void inject(RestaurantsMapFragment fragment);
+
+
 }

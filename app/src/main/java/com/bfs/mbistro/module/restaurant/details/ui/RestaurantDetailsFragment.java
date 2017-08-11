@@ -1,5 +1,6 @@
 package com.bfs.mbistro.module.restaurant.details.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.bfs.mbistro.model.DetailsReviewResponse;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantDetailsContract;
 import com.bfs.mbistro.module.restaurant.rating.RestaurantRatingView;
 import com.bfs.mbistro.network.ApiService;
+import com.bfs.mbistro.network.NetworkMonitor;
 import com.hannesdorfmann.mosby3.mvp.viewstate.lce.LceViewState;
 import com.hannesdorfmann.mosby3.mvp.viewstate.lce.MvpLceViewStateFragment;
 import com.hannesdorfmann.mosby3.mvp.viewstate.lce.data.ParcelableDataLceViewState;
@@ -33,6 +35,7 @@ public class RestaurantDetailsFragment extends
   private static final String NAME_KEY = "NAME_KEY";
   private static final String DISTANCE_KEY = "DISTANCE_KEY";
   @Inject protected ApiService service;
+  @Inject protected NetworkMonitor networkMonitor;
   private RestaurantDetailsContract.Presenter detailsPresenter;
   private TextView distance;
   private TextView cuisinesLabel;
@@ -52,9 +55,9 @@ public class RestaurantDetailsFragment extends
     return fragment;
   }
 
-  @Override public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    ((BistroApp) getActivity().getApplication()).component.inject(this);
+  @Override public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    ((BistroApp) activity.getApplication()).getComponent().inject(this);
   }
 
   @Override public RestaurantDetailsContract.Presenter createPresenter() {
@@ -101,9 +104,9 @@ public class RestaurantDetailsFragment extends
   }
 
   @Override protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
-    return getString(R.string.download_error);
+    return getString(networkMonitor.isOnline() ? R.string.download_error_click_to_refresh
+        : R.string.internet_connection_unavailable_error_click_to_retry);
   }
-
   @Override public DetailsReviewResponse getData() {
     return data;
   }

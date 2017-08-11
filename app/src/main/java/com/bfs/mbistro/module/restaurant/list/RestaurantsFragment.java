@@ -1,8 +1,6 @@
 package com.bfs.mbistro.module.restaurant.list;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,29 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.TextView;
 import com.bfs.mbistro.AndroidUtils;
-import com.bfs.mbistro.BistroApp;
 import com.bfs.mbistro.LocationUtils;
 import com.bfs.mbistro.R;
+import com.bfs.mbistro.base.view.BaseMvpFragment;
+import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.model.Restaurant;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.RestaurantLocation;
 import com.bfs.mbistro.model.location.UserLocation;
 import com.bfs.mbistro.module.restaurant.details.ui.RestaurantDetailsActivity;
-import com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract;
-import com.bfs.mbistro.network.ApiService;
-import com.hannesdorfmann.mosby3.mvp.lce.MvpLceFragment;
+import com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract;
 import java.util.ArrayList;
-import javax.inject.Inject;
 
 public class RestaurantsFragment extends
-    MvpLceFragment<RecyclerView, RestaurantContainer, RestaurantsContract.ItemsView, RestaurantsContract.Presenter>
-    implements RestaurantsContract.ItemsView {
+    BaseMvpFragment<RecyclerView, RestaurantContainer, RestaurantsListContract.ItemsView, RestaurantsListContract.Presenter>
+    implements RestaurantsListContract.ItemsView {
 
-  @Inject protected ApiService service;
   private RestaurantLineAdapter restaurantAdapter;
-  private RecyclerView recyclerView;
   private View progressBar;
   private double currentLatitude;
   private double currentLongitude;
@@ -45,18 +38,13 @@ public class RestaurantsFragment extends
     return inflater.inflate(R.layout.frame_progress_with_recycler, container, false);
   }
 
-  @Override public RestaurantsContract.Presenter createPresenter() {
+  @Override public RestaurantsListContract.Presenter createPresenter() {
     return new PaginatedRestaurantsPresenter(service, new ArrayList<RestaurantContainer>());
-  }
-
-  @Override public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    ((BistroApp) activity.getApplication()).component.inject(this);//todo inject w presenterze
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    recyclerView = (RecyclerView) view.findViewById(R.id.contentView);
+    RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.contentView);
     int resId = R.anim.layout_animation_fall_down;
     LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), resId);
     recyclerView.setLayoutAnimation(animation);
@@ -70,19 +58,6 @@ public class RestaurantsFragment extends
     restaurantAdapter.setOnLoadMoreListener(getPresenter());
     restaurantAdapter.setIsMoreDataAvailable(false);
     recyclerView.setAdapter(restaurantAdapter);
-  }
-
-  @NonNull @Override protected TextView createErrorView(View view) {
-    return super.createErrorView(view);
-  }
-
-  @Override protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
-    return null;//todo test
-  }
-
-  @Override public void showProgress() {
-    recyclerView.setVisibility(View.GONE);
-    progressBar.setVisibility(View.VISIBLE);
   }
 
   @Override public void hideProgress() {
@@ -120,25 +95,23 @@ public class RestaurantsFragment extends
     getActivity().setTitle(location.getLocation().getTitle());
   }
 
-  @Override public void showItemsLoadError(Throwable error) {
-    AndroidUtils.showSnackbar(getActivity(), R.string.download_error, R.string.retry,
-        new View.OnClickListener() {
-          @Override public void onClick(View v) {
-            loadData(false);
-          }
-        });
-  }
-
   @Override public void showItemsPageLoadError(Throwable error) {
-    AndroidUtils.showSnackbar(getActivity(), R.string.download_error, R.string.retry,
-        new View.OnClickListener() {
-          @Override public void onClick(View v) {
-            getPresenter().loadNextItems();
-          }
-        });
+    AndroidUtils.showSnackbar(getActivity(), networkMonitor.isOnline() ? R.string.download_error
+        : R.string.internet_connection_unavailable_error, R.string.retry, new ReloadListener());
   }
 
   @Override public void setMoreItemsAvailable(boolean moreItemsAvailable) {
     restaurantAdapter.setIsMoreDataAvailable(moreItemsAvailable);
+  }
+
+  @Override protected void inject(BistroComponent component) {
+    component.inject(this);
+  }
+
+  private class ReloadListener implements View.OnClickListener {
+
+    @Override public void onClick(View v) {
+      getPresenter().loadNextItems();
+    }
   }
 }

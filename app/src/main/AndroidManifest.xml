@@ -26,9 +26,7 @@
     <meta-data
         android:name="io.fabric.ApiKey"
         android:value="a89581e38873d1dff24d93e11d0ed780df1167fa"/>
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyDYyzi_I55Ph6Dj3tKq55hDI2Sx-obDNo8"/>
+
 
     <activity
         android:name=".module.restaurant.details.ui.RestaurantDetailsActivity"
@@ -38,6 +36,27 @@
           android:name="android.support.PARENT_ACTIVITY"
           android:value="com.bfs.mbistro.module.restaurant.list.RestaurantsActivity"/>
     </activity>
+
+    <activity
+        android:name="com.bfs.mbistro.module.map.RestaurantsMapActivity"
+        android:label="@string/title_activity_maps">
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value="com.bfs.mbistro.module.restaurant.list.RestaurantsActivity"/>
+
+    </activity>
+    <!--
+               The API key for Google Maps-based APIs is defined as a string resource.
+               (See the file "res/values/google_maps_api.xml").
+               Note that the API key is linked to the encryption key used to sign the APK.
+               You need a different API key for each encryption key, including the release key that is used to
+               sign the APK for publishing.
+               You can define the keys for the debug and release targets in src/debug/ and src/release/.
+           -->
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="@string/google_maps_key"/>
+
   </application>
 
 </manifest>

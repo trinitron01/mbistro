@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 
-public class AndroidLocationConditionsChecker implements LocationConditionsChecker {
+public class AndroidLocationPermissionsChecker implements LocationPermissionsChecker {
 
   private final Context context;
 
-  public AndroidLocationConditionsChecker(Context context) {
+  public AndroidLocationPermissionsChecker(Context context) {
     this.context = context;
   }
 

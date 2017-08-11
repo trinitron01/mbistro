@@ -9,5 +9,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="@dimen/text_margin"
+    android:background="?attr/selectableItemBackground"
+    android:drawablePadding="@dimen/padding_medium"
+    android:drawableTop="@drawable/ic_error_72dp"
+    android:gravity="center"
     tools:showIn="@layout/fragment_restaurant_details"
     />

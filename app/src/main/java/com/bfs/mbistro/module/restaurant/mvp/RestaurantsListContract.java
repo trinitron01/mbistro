@@ -8,7 +8,7 @@ import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.location.UserLocation;
 import java.util.List;
 
-public interface RestaurantsContract {
+public interface RestaurantsListContract {
 
   interface RowView extends MvpItemView {
 
@@ -18,8 +18,6 @@ public interface RestaurantsContract {
   interface ItemsView extends MvpItemsView<RestaurantContainer> {
 
     void showRestaurantsLocation(UserLocation userLocation);
-
-    void showItemsLoadError(Throwable error);
 
     void showItemsPageLoadError(Throwable error);
 

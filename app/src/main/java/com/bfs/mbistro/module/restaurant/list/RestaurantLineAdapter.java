@@ -9,9 +9,9 @@ import com.bfs.mbistro.base.adapter.AbstractLoadMoreBaseAdapter;
 import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.model.RestaurantContainer;
 
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.ItemsView;
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.Presenter;
-import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsContract.RowView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract.ItemsView;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract.Presenter;
+import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract.RowView;
 
 class RestaurantLineAdapter extends
     AbstractLoadMoreBaseAdapter<RestaurantContainer, RowView, ItemsView, Presenter> {

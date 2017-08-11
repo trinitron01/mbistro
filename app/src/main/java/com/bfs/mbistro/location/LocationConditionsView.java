@@ -1,10 +1,9 @@
 package com.bfs.mbistro.location;
 
-import android.location.Location;
 import com.google.android.gms.common.api.Status;
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
-public interface LocationConditionsView extends MvpView {
+public interface LocationConditionsView extends MvpView, LocationChangedListener {
 
   void showLocationSettingsView(Status locationSettingsStatus);
 
@@ -13,8 +12,6 @@ public interface LocationConditionsView extends MvpView {
   void showLocationSearchingProgress();
 
   void hideLocationSearchingProgress();
-
-  void showFoundLocation(Location location);
 
   void showLocationError(String error);
 
