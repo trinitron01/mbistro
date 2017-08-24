@@ -13,5 +13,6 @@
     android:drawablePadding="@dimen/padding_medium"
     android:drawableTop="@drawable/ic_error_72dp"
     android:gravity="center"
+    android:visibility="gone"
     tools:showIn="@layout/fragment_restaurant_details"
     />

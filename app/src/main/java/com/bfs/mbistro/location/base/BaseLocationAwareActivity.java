@@ -15,9 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import com.bfs.mbistro.BuildConfig;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.BaseActivity;
-import com.bfs.mbistro.location.AndroidLocationPresenter;
+import com.bfs.mbistro.location.LocationApi;
 import com.bfs.mbistro.location.LocationContract;
 import com.bfs.mbistro.location.LocationPermissionsChecker;
+import com.bfs.mbistro.location.LocationPresenter;
 import com.google.android.gms.common.api.Status;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -32,12 +33,12 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
   private static final int RC_LOCATION_PERMISSIONS = 102;
 
   @Inject protected LocationPermissionsChecker locationPermissionsChecker;
-  private AndroidLocationPresenter locationPresenter;
+  private LocationPresenter locationPresenter;
   private Snackbar locationSnackbar;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    locationPresenter = new AndroidLocationPresenter(locationPermissionsChecker, this);
+    locationPresenter = new LocationPresenter(locationPermissionsChecker, new LocationApi(this));
     locationPresenter.attachView(this);
   }
 
@@ -128,9 +129,5 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
   @Override protected void onDestroy() {
     super.onDestroy();
     locationPresenter.detachView(false);
-  }
-
-  @Override public void showLocationApiError() {
-    showSnackbar(getString(R.string.google_play_api_client_connection_failed));
   }
 }

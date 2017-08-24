@@ -3,62 +3,35 @@ package com.bfs.mbistro.location;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.tasks.OnSuccessListener;
-import timber.log.Timber;
 
-public class AndroidLocationPresenter extends LocationContract.Presenter
-    implements OnSuccessListener<Location> {
+public class LocationPresenter extends LocationContract.Presenter {
 
-  private final FragmentActivity activity;
   private final LocationPermissionsChecker conditionsChecker;
-  private final FusedLocationProviderClient fusedLocationClient;
-  private final GoogleApiClient googleApiClient;
-  private final LocationSettingsResultResultCallback resultCallback;
+  private final LocationApi locationApi;
 
-  public AndroidLocationPresenter(LocationPermissionsChecker conditionsChecker,
-      FragmentActivity activity) {
+  private final Callback resultCallback;
+
+  public LocationPresenter(LocationPermissionsChecker conditionsChecker, LocationApi locationApi) {
     super();
     this.conditionsChecker = conditionsChecker;
-    this.activity = activity;
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
-    googleApiClient = new GoogleApiClient.Builder(activity).addApi(Places.GEO_DATA_API)
-        .addApi(Places.PLACE_DETECTION_API)
-        .addApi(LocationServices.API)
-        .enableAutoManage(activity, new GoogleApiConnectionFailedListener())
-        .build();
-    resultCallback = new LocationSettingsResultResultCallback();
-  }
-
-  @NonNull private static LocationRequest createLocationRequest() {
-    LocationRequest locationRequest = LocationRequest.create();
-    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    return locationRequest;
+    this.locationApi = locationApi;
+    resultCallback = new Callback();
   }
 
   /**
-   * Gets the address for the last known location.
+   * Gets the last known location. Here we only check if permissions are enabled
    */
-  @SuppressLint("MissingPermission") @Override public void checkSettingsAndRequestLocation() {
+  @Override public void checkSettingsAndRequestLocation() {
     if (conditionsChecker.areLocationPermissionsGranted()) {
-      fusedLocationClient.getLastLocation()
-          .addOnSuccessListener(activity, AndroidLocationPresenter.this);
+      locationApi.requestLatestLocation(this);
     } else {
       getView().askForLocationPermissions();
     }
@@ -97,19 +70,12 @@ public class AndroidLocationPresenter extends LocationContract.Presenter
 
   @Override public void requestLocationSettingsChange() {
     getView().showLocationSearchingProgress();
-    final LocationRequest locationRequest = createLocationRequest();
-    LocationSettingsRequest.Builder builder =
-        new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-    builder.setAlwaysShow(true);
-    final PendingResult<LocationSettingsResult> result =
-        LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
-    resultCallback.setLocationRequest(locationRequest);
-    result.setResultCallback(resultCallback);
+    locationApi.requestSettingsChange(resultCallback);
   }
 
   @Override public void detachView(boolean retainInstance) {
     super.detachView(retainInstance);
-    fusedLocationClient.removeLocationUpdates(resultCallback);
+    locationApi.removeLocationUpdates(resultCallback);
   }
 
   @Override public void onSuccess(Location location) {
@@ -120,24 +86,11 @@ public class AndroidLocationPresenter extends LocationContract.Presenter
     }
   }
 
-  private class GoogleApiConnectionFailedListener
-      implements GoogleApiClient.OnConnectionFailedListener {
-
-    @Override public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-      getView().showLocationApiError();
-      Timber.w("GoogleApiClient connection failed "
-          + connectionResult.getErrorMessage()
-          + ' '
-          + connectionResult.getErrorCode());
-    }
-  }
-
-  private class LocationSettingsResultResultCallback extends LocationCallback
-      implements ResultCallback<LocationSettingsResult> {
+  class Callback extends LocationCallback implements ResultCallback<LocationSettingsResult> {
 
     private LocationRequest locationRequest;
 
-    LocationSettingsResultResultCallback() {
+    Callback() {
 
     }
 
@@ -154,7 +107,7 @@ public class AndroidLocationPresenter extends LocationContract.Presenter
           break;
         case CommonStatusCodes.SUCCESS:
           if (conditionsChecker.areLocationPermissionsGranted()) {
-            fusedLocationClient.requestLocationUpdates(locationRequest, this, Looper.myLooper());
+            locationApi.requestLocationUpdates(locationRequest, this);
           } else {
             getView().askForLocationPermissions();
           }
@@ -168,7 +121,7 @@ public class AndroidLocationPresenter extends LocationContract.Presenter
       super.onLocationResult(locationResult);
       if (locationResult.getLastLocation() != null) {
         onLocationObtained(locationResult.getLastLocation());
-        fusedLocationClient.removeLocationUpdates(this);
+        locationApi.removeLocationUpdates(this);
       } else {
         getView().showLocationNotFoundError();
       }

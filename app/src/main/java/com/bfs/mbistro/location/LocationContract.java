@@ -4,6 +4,7 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import com.bfs.mbistro.LocationUtils;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 import java.util.concurrent.TimeUnit;
@@ -25,11 +26,9 @@ public interface LocationContract {
     void showPermissionsDenied();
 
     void showLocationDisabled();
-
-    void showLocationApiError();
   }
 
-  abstract class Presenter extends MvpBasePresenter<View> {
+  abstract class Presenter extends MvpBasePresenter<View> implements OnSuccessListener<Location> {
 
     static final int LOCATION_REQUEST_INTERVAL_MINUTES = 5;
     private static final int DISTANCE_DIFF_THRESHOLD_METERS = 500;
