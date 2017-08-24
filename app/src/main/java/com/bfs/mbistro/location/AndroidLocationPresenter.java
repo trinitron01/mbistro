@@ -23,7 +23,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnSuccessListener;
 import timber.log.Timber;
 
-public class AndroidLocationPresenter extends LocationPresenter
+public class AndroidLocationPresenter extends LocationContract.Presenter
     implements OnSuccessListener<Location> {
 
   private final FragmentActivity activity;

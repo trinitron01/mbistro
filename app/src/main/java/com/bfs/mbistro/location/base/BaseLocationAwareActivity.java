@@ -12,12 +12,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.view.View;
 import com.bfs.mbistro.BuildConfig;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.base.BaseActivity;
 import com.bfs.mbistro.location.AndroidLocationPresenter;
-import com.bfs.mbistro.location.LocationConditionsView;
+import com.bfs.mbistro.location.LocationContract;
 import com.bfs.mbistro.location.LocationPermissionsChecker;
 import com.google.android.gms.common.api.Status;
 import javax.inject.Inject;
@@ -26,7 +25,7 @@ import timber.log.Timber;
 import static com.bfs.mbistro.AndroidUtils.dismissSnackbar;
 
 public abstract class BaseLocationAwareActivity extends BaseActivity
-    implements LocationConditionsView {
+    implements LocationContract.View {
 
   //Request Codes
   public static final int RC_LOCATION_SETTINGS = 101;
@@ -104,8 +103,8 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
 
   @Override public void showPermissionsDenied() {
     showSnackbar(this, R.string.location_permission_denied_explanation, R.string.settings,
-        new View.OnClickListener() {
-          @Override public void onClick(View view) {
+        new android.view.View.OnClickListener() {
+          @Override public void onClick(android.view.View view) {
             // Build intent that displays the BistroApp settings screen.
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -119,8 +118,8 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
 
   @Override public void showLocationDisabled() {
     showSnackbar(this, R.string.location_disabled_explanation, R.string.turn_on_location,
-        new View.OnClickListener() {
-          @Override public void onClick(View v) {
+        new android.view.View.OnClickListener() {
+          @Override public void onClick(android.view.View v) {
             locationPresenter.requestLocationSettingsChange();
           }
         });
