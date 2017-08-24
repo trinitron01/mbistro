@@ -66,7 +66,7 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
     }
   }
 
-  @Override public void showLocationSettingsView(Status locationSettingsStatus) {
+  @Override public void showLocationSettings(Status locationSettingsStatus) {
     try {
       // Show the dialog by calling startResolutionForResult(),
       // and check the result in onActivityResult().
@@ -98,11 +98,11 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
     dismissSnackbar(locationSnackbar);
   }
 
-  @Override public void showLocationError(String error) {
-    showSnackbar(error);
+  @Override public void showLocationNotFoundError() {
+    showSnackbar(getString(R.string.error_location_not_found));
   }
 
-  @Override public void showDeniedPermissionsView() {
+  @Override public void showPermissionsDenied() {
     showSnackbar(this, R.string.location_permission_denied_explanation, R.string.settings,
         new View.OnClickListener() {
           @Override public void onClick(View view) {
@@ -131,7 +131,7 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
     locationPresenter.detachView(false);
   }
 
-  @Override public void showLocationApiError(String message) {
-    showSnackbar(message);
+  @Override public void showLocationApiError() {
+    showSnackbar(getString(R.string.google_play_api_client_connection_failed));
   }
 }

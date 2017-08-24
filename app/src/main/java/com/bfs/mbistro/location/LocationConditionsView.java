@@ -5,7 +5,7 @@ import com.hannesdorfmann.mosby3.mvp.MvpView;
 
 public interface LocationConditionsView extends MvpView, LocationChangedListener {
 
-  void showLocationSettingsView(Status locationSettingsStatus);
+  void showLocationSettings(Status locationSettingsStatus);
 
   void askForLocationPermissions();
 
@@ -13,11 +13,11 @@ public interface LocationConditionsView extends MvpView, LocationChangedListener
 
   void hideLocationSearchingProgress();
 
-  void showLocationError(String error);
+  void showLocationNotFoundError();
 
-  void showDeniedPermissionsView();
+  void showPermissionsDenied();
 
   void showLocationDisabled();
 
-  void showLocationApiError(String message);
+  void showLocationApiError();
 }

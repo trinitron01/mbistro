@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import com.bfs.mbistro.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -84,7 +83,7 @@ public class AndroidLocationPresenter extends LocationPresenter
       // again" prompts). Therefore, a user interface affordance is typically implemented
       // when permissions are denied. Otherwise, your app could appear unresponsive to
       // touches or interactions which have required permissions.
-      getView().showDeniedPermissionsView();
+      getView().showPermissionsDenied();
     }
   }
 
@@ -125,8 +124,7 @@ public class AndroidLocationPresenter extends LocationPresenter
       implements GoogleApiClient.OnConnectionFailedListener {
 
     @Override public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-      getView().showLocationApiError(
-          activity.getString(R.string.google_play_api_client_connection_failed));
+      getView().showLocationApiError();
       Timber.w("GoogleApiClient connection failed "
           + connectionResult.getErrorMessage()
           + ' '
@@ -152,7 +150,7 @@ public class AndroidLocationPresenter extends LocationPresenter
       final Status status = locationSettingsResult.getStatus();
       switch (status.getStatusCode()) {
         case CommonStatusCodes.RESOLUTION_REQUIRED:
-          getView().showLocationSettingsView(status);
+          getView().showLocationSettings(status);
           break;
         case CommonStatusCodes.SUCCESS:
           if (conditionsChecker.areLocationPermissionsGranted()) {
@@ -172,7 +170,7 @@ public class AndroidLocationPresenter extends LocationPresenter
         onLocationObtained(locationResult.getLastLocation());
         fusedLocationClient.removeLocationUpdates(this);
       } else {
-        getView().showLocationError(activity.getString(R.string.error_location_not_found));
+        getView().showLocationNotFoundError();
       }
     }
   }
