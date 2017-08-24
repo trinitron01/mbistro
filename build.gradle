@@ -7,7 +7,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:3.0.0-beta2'
-    classpath 'io.fabric.tools:gradle:1.21.6'
+    classpath 'io.fabric.tools:gradle:1.23.0'
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
@@ -45,4 +45,5 @@ ext {
   crashlyticsVersion = '2.6.8'
   mosbyMvpVersion = '3.0.4'
   timberVersion = '4.5.1'
+  mockitoVersion = '2.8.9'
 }
