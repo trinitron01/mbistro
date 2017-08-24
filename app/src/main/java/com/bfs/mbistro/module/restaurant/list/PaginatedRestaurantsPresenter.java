@@ -121,11 +121,11 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
     }
 
     @Override
-    public void onNext(Pair<UserLocation, List<RestaurantContainer>> userLocationListPair) {
+    public void onNext(Pair<UserLocation, List<RestaurantContainer>> locationWithRestaurants) {
       RestaurantsListContract.ItemsView restaurantsView = getView();
-      cityId = userLocationListPair.first.getLocation().getCityId();
-      restaurantsView.showRestaurantsLocation(userLocationListPair.first);
-      onNewItems(userLocationListPair.second, true);
+      cityId = locationWithRestaurants.first.getLocation().getCityId();
+      restaurantsView.showRestaurantsLocation(locationWithRestaurants.first);
+      onNewItems(locationWithRestaurants.second, true);
     }
   }
 

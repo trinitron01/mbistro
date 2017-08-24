@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -29,9 +28,9 @@ import static com.bfs.mbistro.AndroidUtils.dismissSnackbar;
 public abstract class BaseLocationAwareActivity extends BaseActivity
     implements LocationConditionsView {
 
-  public static final int REQUEST_CODE_LOCATION_SETTINGS = 101;
-  private static final String USER_LOCATION_KEY = "USER_LOCATION_KEY";
-  private static final int REQUEST_CODE_LOCATION_PERMISSIONS = 102;
+  //Request Codes
+  public static final int RC_LOCATION_SETTINGS = 101;
+  private static final int RC_LOCATION_PERMISSIONS = 102;
 
   @Inject protected LocationPermissionsChecker locationPermissionsChecker;
   private AndroidLocationPresenter locationPresenter;
@@ -39,12 +38,7 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Location savedInstanceLocation = null;
-    if (savedInstanceState != null && savedInstanceState.containsKey(USER_LOCATION_KEY)) {
-      savedInstanceLocation = savedInstanceState.getParcelable(USER_LOCATION_KEY);
-    }
-    locationPresenter =
-        new AndroidLocationPresenter(locationPermissionsChecker, this, savedInstanceLocation);
+    locationPresenter = new AndroidLocationPresenter(locationPermissionsChecker, this);
     locationPresenter.attachView(this);
   }
 
@@ -55,26 +49,19 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
     }
   }
 
-  @Override public void onSaveInstanceState(Bundle outState) {
-    if (locationPresenter.getLastLocation() != null) {
-      outState.putParcelable(USER_LOCATION_KEY, locationPresenter.getLastLocation());
-    }
-    super.onSaveInstanceState(outState);
-  }
-
   /**
    * Callback received when a permissions request has been completed.
    */
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
-    if (requestCode == REQUEST_CODE_LOCATION_PERMISSIONS) {
+    if (requestCode == RC_LOCATION_PERMISSIONS) {
       locationPresenter.onPermissionRequestCompleted(grantResults);
     }
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == REQUEST_CODE_LOCATION_SETTINGS) {
+    if (requestCode == RC_LOCATION_SETTINGS) {
       locationPresenter.onLocationSettingsChanged(resultCode == Activity.RESULT_OK);
     }
   }
@@ -83,7 +70,7 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
     try {
       // Show the dialog by calling startResolutionForResult(),
       // and check the result in onActivityResult().
-      locationSettingsStatus.startResolutionForResult(this, REQUEST_CODE_LOCATION_SETTINGS);
+      locationSettingsStatus.startResolutionForResult(this, RC_LOCATION_SETTINGS);
     } catch (IntentSender.SendIntentException e) {
       Timber.e(e);
     }
@@ -91,8 +78,7 @@ public abstract class BaseLocationAwareActivity extends BaseActivity
 
   @Override public void askForLocationPermissions() {
     ActivityCompat.requestPermissions(this,
-        new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-        REQUEST_CODE_LOCATION_PERMISSIONS);
+        new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, RC_LOCATION_PERMISSIONS);
   }
 
   @Override public void showLocationSearchingProgress() {

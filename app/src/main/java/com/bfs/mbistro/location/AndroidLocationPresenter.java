@@ -1,5 +1,6 @@
 package com.bfs.mbistro.location;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Looper;
@@ -33,8 +34,8 @@ public class AndroidLocationPresenter extends LocationPresenter
   private final LocationSettingsResultResultCallback resultCallback;
 
   public AndroidLocationPresenter(LocationPermissionsChecker conditionsChecker,
-      FragmentActivity activity, Location lastLocation) {
-    super(lastLocation);
+      FragmentActivity activity) {
+    super();
     this.conditionsChecker = conditionsChecker;
     this.activity = activity;
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
@@ -55,9 +56,8 @@ public class AndroidLocationPresenter extends LocationPresenter
   /**
    * Gets the address for the last known location.
    */
-  @Override public void checkSettingsAndRequestLocation() {
+  @SuppressLint("MissingPermission") @Override public void checkSettingsAndRequestLocation() {
     if (conditionsChecker.areLocationPermissionsGranted()) {
-      //noinspection MissingPermission
       fusedLocationClient.getLastLocation()
           .addOnSuccessListener(activity, AndroidLocationPresenter.this);
     } else {
@@ -147,7 +147,8 @@ public class AndroidLocationPresenter extends LocationPresenter
       this.locationRequest = locationRequest;
     }
 
-    @Override public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+    @SuppressLint("MissingPermission") @Override
+    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
       final Status status = locationSettingsResult.getStatus();
       switch (status.getStatusCode()) {
         case CommonStatusCodes.RESOLUTION_REQUIRED:
@@ -155,7 +156,6 @@ public class AndroidLocationPresenter extends LocationPresenter
           break;
         case CommonStatusCodes.SUCCESS:
           if (conditionsChecker.areLocationPermissionsGranted()) {
-            //noinspection MissingPermission
             fusedLocationClient.requestLocationUpdates(locationRequest, this, Looper.myLooper());
           } else {
             getView().askForLocationPermissions();

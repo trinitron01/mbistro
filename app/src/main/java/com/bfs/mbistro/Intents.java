@@ -21,6 +21,7 @@ public class Intents {
   private static final String GOOGLE_PLAY_APP_DEEP_LINK = "market://details?id=%1$s";
   private static final String GOOGLE_PLAY_BROWSER_DEEP_LINK =
       "https://play.google.com/store/apps/details?id=%1$S";
+  private static final String GOOGLE_MAPS_URL = "http://maps.google.com/maps?q=";
 
   public static void makeEmail(Context context, String address, String subject, String content) {
     makeEmail(context, new String[] { address }, subject, content);
@@ -82,15 +83,15 @@ public class Intents {
   }
 
   public static void showOnMap(Activity activity, BigDecimal lat, BigDecimal lng, String address,
-      NoAvailableComponentListener listener) {
+      ComponentUnavailableListener listener) {
     if (lat != null && lng != null) {
       showOnMap(activity, lat.doubleValue(), lng.doubleValue(), address, listener);
     }
   }
 
   public static void showOnMap(Context context, double lat, double lng, String address,
-      @Nullable NoAvailableComponentListener listener) {
-    Uri browser = Uri.parse("http://maps.google.com/maps?q=" + address + "@" + lat + "," + lng);
+      @Nullable ComponentUnavailableListener listener) {
+    Uri browser = Uri.parse(GOOGLE_MAPS_URL + address + "@" + lat + "," + lng);
     Intent intent = new Intent(Intent.ACTION_VIEW, browser);
     Intent chooser = Intent.createChooser(intent, context.getString(R.string.title_show_on_map));
     if (intent.resolveActivity(context.getPackageManager()) != null) {
@@ -100,8 +101,22 @@ public class Intents {
     }
   }
 
+  public static void showOnMap(Context context, CharSequence query,
+      @Nullable ComponentUnavailableListener listener) {
+
+    Uri browser = Uri.parse(GOOGLE_MAPS_URL + query);
+    Intent intent = new Intent(Intent.ACTION_VIEW, browser);
+    Intent chooser = Intent.createChooser(intent, context.getString(R.string.title_show_on_map));
+    if (intent.resolveActivity(context.getPackageManager()) != null) {
+      context.startActivity(chooser);
+    } else {
+      listener.onComponentUnavailable(intent);
+    }
+  }
+
+
   public static void showNavigation(Context context, double latitude, double longitude,
-      String label, @Nullable NoAvailableComponentListener listener) {
+      String label, @Nullable ComponentUnavailableListener listener) {
     final String navigationBaseQuery = "google.navigation:q=";
     String address = null;
     if (latitude == 0 || longitude == 0) {
@@ -128,7 +143,7 @@ public class Intents {
     }
   }
 
-  public interface NoAvailableComponentListener {
+  public interface ComponentUnavailableListener {
 
     void onComponentUnavailable(Intent unsupportedIntent);
   }

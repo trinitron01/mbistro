@@ -21,6 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module(includes = AppModule.class) public class BistroServiceModule {
 
+  private static final int CONNECTION_TIME_OUT = 120000;
+  private static final int READ_TIME_OUT = 120000;
   private static final int RESPONSE_CACHE_SIZE = 10 * 1024 * 1024;
   private final String baseUrl;
   private final File cacheDir;
@@ -36,9 +38,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
   }
 
   @Provides @Singleton OkHttpClient provideOkHttpClient(NetworkMonitor networkMonitor) {
+
     return new OkHttpClient.Builder().cache(new Cache(cacheDir, RESPONSE_CACHE_SIZE))
         .addInterceptor(new OfflineInterceptor(networkMonitor))
         .addNetworkInterceptor(new NetworkInterceptor(networkMonitor))
+        .readTimeout(READ_TIME_OUT, TimeUnit.MILLISECONDS)
+        .connectTimeout(CONNECTION_TIME_OUT, TimeUnit.MILLISECONDS)
         .build();
   }
 

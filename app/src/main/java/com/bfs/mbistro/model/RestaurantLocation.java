@@ -65,4 +65,8 @@ public class RestaurantLocation implements Parcelable {
   public double getLongitude() {
     return longitude;
   }
+
+  public String getCity() {
+    return city;
+  }
 }

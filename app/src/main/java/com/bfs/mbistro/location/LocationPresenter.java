@@ -2,7 +2,6 @@ package com.bfs.mbistro.location;
 
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.bfs.mbistro.LocationUtils;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import java.util.concurrent.TimeUnit;
@@ -14,8 +13,7 @@ abstract class LocationPresenter extends MvpBasePresenter<LocationConditionsView
   private Location lastLocation;
   private long lastLocationTimestampMillis;
 
-  LocationPresenter(@Nullable Location lastLocation) {
-    this.lastLocation = lastLocation;
+  LocationPresenter() {
   }
 
   public abstract void checkSettingsAndRequestLocation();
@@ -45,9 +43,5 @@ abstract class LocationPresenter extends MvpBasePresenter<LocationConditionsView
     return lastLocationTimestampMillis == 0
         || TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastLocationTimestampMillis)
         > LocationPresenter.LOCATION_REQUEST_INTERVAL_MINUTES;
-  }
-
-  @Nullable public Location getLastLocation() {
-    return lastLocation;
   }
 }

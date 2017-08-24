@@ -7,6 +7,7 @@ import com.bfs.mbistro.base.adapter.BaseViewHolder;
 import com.bfs.mbistro.base.listener.ItemClickListener;
 import com.bfs.mbistro.model.Restaurant;
 import com.bfs.mbistro.model.RestaurantContainer;
+import com.bfs.mbistro.model.UserRating;
 import com.bfs.mbistro.module.restaurant.rating.RestaurantRatingView;
 
 import static com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract.RowView;
@@ -37,7 +38,9 @@ class RestaurantViewHolder extends BaseViewHolder implements RowView, View.OnCli
     titleView.setText(container.getName());
     Restaurant restaurant = container.getRestaurant();
     descriptionView.setText(restaurant.getCuisines());
-    ratingView.setRating(container.restaurant.userRating);
+    UserRating rating = container.restaurant.userRating;
+    ratingView.setRatingValue(rating.getVotes(), rating.getAggregateRating(),
+        rating.getRatingColor());
     int averageCostForTwo = restaurant.getAverageCostForTwo();
     if (averageCostForTwo > 0) {
       priceForTwoView.setVisibility(View.VISIBLE);

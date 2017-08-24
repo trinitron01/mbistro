@@ -88,6 +88,20 @@
           />
 
 
+      <com.bfs.mbistro.module.restaurant.rating.RestaurantRatingView
+          android:id="@+id/google_rating_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          />
+
+      <TextView
+          android:id="@+id/google_place_info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          />
+
     </LinearLayout>
 
 

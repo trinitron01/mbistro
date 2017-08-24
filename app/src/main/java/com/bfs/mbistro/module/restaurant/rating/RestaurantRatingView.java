@@ -12,9 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.bfs.mbistro.AndroidUtils;
+import com.bfs.mbistro.JavaUtils;
 import com.bfs.mbistro.R;
-import com.bfs.mbistro.model.UserRating;
 import java.util.Locale;
+import timber.log.Timber;
 
 public class RestaurantRatingView extends LinearLayout {
 
@@ -53,17 +54,29 @@ public class RestaurantRatingView extends LinearLayout {
     ratingBar = (RatingBar) findViewById(R.id.list_item_rating_bar);
   }
 
-  public void setRating(UserRating userRating) {
-    int ratingColor = Color.parseColor(COLOR_VALUE_PREFIX + userRating.getRatingColor());
+  public void setRatingValue(String votes, float rating, String color) {
+    int ratingColor = 0;
+    if (JavaUtils.isNotNulNorEmptyString(color)) {
+      try {
+        ratingColor = Color.parseColor(COLOR_VALUE_PREFIX + color);
+      } catch (IllegalArgumentException e) {
+        Timber.w(e, "Color parsing failed for value " + color);
+        ratingColor = Color.BLACK;
+      }
+    }
+
     ratingLabel.setTextColor(ratingColor);
     ratingCountLabel.setTextColor(ratingColor);
-    ratingCountLabel.setText(userRating.getVotes());
+    ratingCountLabel.setText(votes);
     Drawable votesCountDrawable =
         AndroidUtils.getTintedVectorDrawable(R.drawable.ic_group_black_16dp, ratingColor,
             getContext());
     ratingCountLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, votesCountDrawable, null);
-    ratingLabel.setText(
-        String.format(Locale.US, RATING_FLOAT_VALUE_PATTERN, userRating.getAggregateRating()));
-    ratingBar.setRating(userRating.getAggregateRating());
+    setRatingValue(rating);
+  }
+
+  public void setRatingValue(float rating) {
+    ratingLabel.setText(String.format(Locale.US, RATING_FLOAT_VALUE_PATTERN, rating));
+    ratingBar.setRating(rating);
   }
 }
