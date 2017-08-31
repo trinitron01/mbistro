@@ -21,7 +21,9 @@
       android:layout_height="match_parent"
       android:visibility="gone"
       tools:appContext="com.bfs.mbistro.module.restaurant.list.RestaurantsActivity"
+      tools:listitem="@layout/list_item_restaurant"
       tools:showIn="@layout/restaurant_list"
+      tools:visibility="visible"
       />
 
 </FrameLayout>
