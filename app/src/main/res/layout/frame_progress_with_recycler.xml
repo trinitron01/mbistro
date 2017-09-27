@@ -28,4 +28,7 @@
       tools:visibility="visible"
       />
 
+  <include layout="@layout/empty_view"/>
+
+
 </FrameLayout>

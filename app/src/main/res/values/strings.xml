@@ -22,4 +22,5 @@
   <string name="cuisines_label">Kuchnie:</string>
   <string name="title_activity_maps">@string/nearby_places</string>
   <string name="switch_to_map_label">Zobacz na mapie</string>
+  <string name="no_items_found">Nie znaleziono lokali</string>
 </resources>

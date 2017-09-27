@@ -28,6 +28,7 @@ public class RestaurantsFragment extends
 
   private RestaurantLineAdapter restaurantAdapter;
   private View progressBar;
+
   private double currentLatitude;
   private double currentLongitude;
 
@@ -48,6 +49,7 @@ public class RestaurantsFragment extends
     LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), resId);
     recyclerView.setLayoutAnimation(animation);
     progressBar = view.findViewById(R.id.loadingView);
+
     recyclerView.setHasFixedSize(true);
     recyclerView.addItemDecoration(
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -67,6 +69,10 @@ public class RestaurantsFragment extends
     int distanceMeters = LocationUtils.distanceBetweenMeters(currentLatitude, currentLongitude,
         location.getLatitude(), location.getLongitude());
     RestaurantDetailsActivity.start(getContext(), restaurant, distanceMeters);
+  }
+
+  @Override public void showEmptyView() {
+    animateEmptyViewIn();
   }
 
   public void onNewLocation(double latitude, double longitude) {

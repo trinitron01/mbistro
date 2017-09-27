@@ -135,7 +135,7 @@ public abstract class AbstractLoadMoreBaseAdapter<T, IV extends MvpItemView, V e
     }
   }
 
-  private boolean isDataEmpty() {
+  public final boolean isDataEmpty() {
     return getDataSet() == null || getDataSet().isEmpty();
   }
 

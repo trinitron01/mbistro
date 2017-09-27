@@ -7,6 +7,7 @@ import com.bfs.mbistro.model.location.UserLocation;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract;
 import com.bfs.mbistro.network.ApiService;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.List;
 import retrofit2.HttpException;
 import rx.Observable;
@@ -75,6 +76,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
   }
 
   @Override public void loadLocationItems(double latitude, double longitude) {
+
     itemsShown = 0;
     itemsStartIndex = 0;
     compositeSubscription.add(service.geocode(latitude, longitude)
@@ -93,6 +95,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
         .subscribeOn(Schedulers.io())
         .doOnSubscribe(new Action0() {
           @Override public void call() {
+            getItems().clear();
             getView().showLoading(false);
           }
         })
@@ -116,8 +119,13 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
     }
 
     @Override public void onError(Throwable error) {
-      logException(error, "Restaurant List For Location");
-      getView().showError(error, false);
+      if (error instanceof HttpException
+          && ((HttpException) error).code() == HttpURLConnection.HTTP_NOT_FOUND) {
+        getView().showEmptyView();
+      } else {
+        logException(error, "Restaurant List For Location");
+        getView().showError(error, false);
+      }
     }
 
     @Override
@@ -136,8 +144,13 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
     }
 
     @Override public void onError(Throwable error) {
-      logException(error, "Paginated List");
-      getView().showItemsPageLoadError(error);
+      if (error instanceof HttpException
+          && ((HttpException) error).code() == HttpURLConnection.HTTP_NOT_FOUND) {
+        getView().showEmptyView();
+      } else {
+        logException(error, "Paginated List");
+        getView().showItemsPageLoadError(error);
+      }
     }
 
     @Override public void onNext(Restaurants restaurants) {

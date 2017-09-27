@@ -80,7 +80,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
   private class NetworkInterceptor implements Interceptor {
 
-    public static final int RESPONSE_CACHE_TIME_MINUTES = 60;
+    private static final int RESPONSE_CACHE_TIME_MINUTES = 60;
+    private static final String USER_KEY_CALUE = "b5ae9d15d056fbb3c6145958f14ad4d8";
     private final NetworkMonitor networkMonitor;
 
     NetworkInterceptor(NetworkMonitor networkMonitor) {
@@ -90,7 +91,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
     @Override public Response intercept(Chain chain) throws IOException {
       Request request = chain.request();
       Request.Builder builder = request.newBuilder();
-      builder.addHeader("user-key", "b5ae9d15d056fbb3c6145958f14ad4d8")
+      builder.addHeader("user-key", USER_KEY_CALUE)
           .addHeader("Accept-Language", "pl,en-US;q=0.7,en;q=0.3");
       if (!networkMonitor.isOnline()) {
         // To be used with Application Interceptor to use Expired cache

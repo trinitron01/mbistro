@@ -14,6 +14,7 @@ public interface ApiService {
 
   String LATITUDE = "lat";
   String LONGITUDE = "lon";
+  String RADIUS = "radius";
   String RESOURCE_ID = "res_id";
 
   @GET("search") Observable<Restaurants> getRestaurants(@Query("entity_id") int cityId,
@@ -21,7 +22,7 @@ public interface ApiService {
       @Query("count") int count);
 
   @GET("search") Observable<Restaurants> getRestaurants(@Query(LATITUDE) double lat,
-      @Query(LONGITUDE) double longitude);
+      @Query(LONGITUDE) double longitude, @Query(RADIUS) double radius);
 
   @GET("restaurant") Observable<RestaurantDetails> getRestaurant(
       @Query(RESOURCE_ID) String restaurantId);

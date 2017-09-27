@@ -1,5 +1,6 @@
 package com.bfs.mbistro.module.map;
 
+import android.annotation.SuppressLint;
 import android.util.Pair;
 import com.bfs.mbistro.location.LocationPermissionsChecker;
 import com.bfs.mbistro.model.Restaurants;
@@ -8,6 +9,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import java.net.HttpURLConnection;
+import retrofit2.HttpException;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -17,6 +20,7 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
     implements OnMapReadyCallback {
 
   private static final float INITIAL_ZOOM = 16;
+  private static final int RADIUS_IN_METERS = 50;
 
   private GoogleMap googleMap;
   private CompositeSubscription compositeSubscription;
@@ -51,21 +55,13 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
     compositeSubscription.unsubscribe();
   }
 
-  /**
-   * Manipulates the map once available.
-   * This callback is triggered when the map is ready to be used.
-   * This is where we can add markers or lines, add listeners or move the camera. In this case,
-   * we just add a marker near Sydney, Australia.
-   * If Google Play services is not installed on the device, the user will be prompted to install
-   * it inside the SupportMapFragment. This method will only be triggered once the user has
-   * installed Google Play services and returned to the app.
-   */
-  @Override public void onMapReady(GoogleMap map) {
+  @SuppressLint("MissingPermission") @Override public void onMapReady(GoogleMap map) {
     googleMap = map;
-
-    //noinspection MissingPermission
-    googleMap.setMyLocationEnabled(locationPermissionsChecker.areLocationPermissionsGranted());
-
+    if (locationPermissionsChecker.areLocationPermissionsGranted()) {
+      googleMap.setMyLocationEnabled(true);
+    }
+    googleMap.getUiSettings().setMapToolbarEnabled(false);
+    googleMap.getUiSettings().setZoomControlsEnabled(true);
     if (scheduleLoad) {
       loadItems();
     }
@@ -73,7 +69,7 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
 
   private void loadItems() {
     getView().showLoading(false);
-    compositeSubscription.add(service.getRestaurants(latitude, longitude)
+    compositeSubscription.add(service.getRestaurants(latitude, longitude, RADIUS_IN_METERS)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new RestaurantsMapSubscriber()));
@@ -85,8 +81,13 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
 
     }
 
-    @Override public void onError(Throwable e) {
-      getView().showError(e, false);
+    @Override public void onError(Throwable error) {
+      if (error instanceof HttpException
+          && ((HttpException) error).code() == HttpURLConnection.HTTP_NOT_FOUND) {
+        getView().showEmptyView();
+      } else {
+        getView().showError(error, false);
+      }
       scheduleLoad = false;
     }
 

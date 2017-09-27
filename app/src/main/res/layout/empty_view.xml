@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/emptyView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/text_margin"
+    android:drawablePadding="@dimen/padding_medium"
+    android:drawableTop="@drawable/ic_empty_list_72dp"
+    android:gravity="center"
+    android:text="@string/no_items_found"
+    android:visibility="gone"
+    tools:showIn="@layout/fragment_restaurant_details"
+    />

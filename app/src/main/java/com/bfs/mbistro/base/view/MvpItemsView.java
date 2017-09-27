@@ -7,4 +7,6 @@ public interface MvpItemsView<T> extends MvpLceView<T> {
   void hideProgress();
 
   void showItemDetails(T t);
+
+  void showEmptyView();
 }

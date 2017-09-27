@@ -99,4 +99,8 @@ public class RestaurantsMapFragment extends
       RestaurantDetailsActivity.start(getContext(), restaurant, distanceMeters);
     }
   }
+
+  @Override public void showEmptyView() {
+    animateEmptyViewIn();
+  }
 }

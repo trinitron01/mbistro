@@ -14,6 +14,7 @@ class RestaurantsMapContract {
   interface RestaurantsMapView
       extends MvpLceView<Pair<Restaurants, GoogleMap>>, LocationChangedListener {
 
+    void showEmptyView();
   }
 
   abstract static class Presenter extends MvpBasePresenter<RestaurantsMapView> {
