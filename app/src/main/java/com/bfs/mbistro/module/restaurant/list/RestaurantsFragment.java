@@ -3,7 +3,6 @@ package com.bfs.mbistro.module.restaurant.list;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,8 +48,6 @@ public class RestaurantsFragment extends
     LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), resId);
     recyclerView.setLayoutAnimation(animation);
     progressBar = view.findViewById(R.id.loadingView);
-    recyclerView.setLayoutManager(
-        new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     recyclerView.setHasFixedSize(true);
     recyclerView.addItemDecoration(
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));

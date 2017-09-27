@@ -4,7 +4,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'io.fabric.tools:gradle:1.22.2'
+    classpath 'io.fabric.tools:gradle:1.23.0'
   }
 }
 apply plugin: 'com.android.application'
@@ -31,6 +31,11 @@ android {
   }
   buildTypes {
 
+    debug {
+      //fabric / chrashlytics - Only use this flag on builds you don't proguard or upload to beta-by-crashlytics
+      ext.alwaysUpdateBuildId = false
+    }
+
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -45,20 +50,20 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
       })
 
-  compile "com.hannesdorfmann.mosby3:mvp-lce:$rootProject.mosbyMvpVersion" // Plain MVP
+  implementation "com.hannesdorfmann.mosby3:mvp-lce:$rootProject.mosbyMvpVersion" // Plain MVP
 
-  compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
-  compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
-  compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.retrofitVersion"
+  implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+  implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+  implementation "com.squareup.retrofit2:adapter-rxjava:$rootProject.retrofitVersion"
 
-  compile("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
+  implementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
     transitive = true;
   }
 
-  compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-  compile "com.android.support:design:$rootProject.supportLibraryVersion"
-  compile "com.google.dagger:dagger:$rootProject.daggerVersion"
-  compile('com.github.ihsanbal:LoggingInterceptor:2.0.2') {
+  implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+  implementation "com.android.support:design:$rootProject.supportLibraryVersion"
+  implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+  implementation('com.github.ihsanbal:LoggingInterceptor:2.0.2') {
     exclude group: 'org.json', module: 'json'
   }
   annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
@@ -67,10 +72,10 @@ dependencies {
   testCompile "junit:junit:$rootProject.junitVersion"
   testCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
 
-  compile "io.reactivex:rxandroid:$rootProject.rxAndroidVersion"
+  implementation "io.reactivex:rxandroid:$rootProject.rxAndroidVersion"
 
-  compile "com.google.android.gms:play-services-places:$rootProject.playServicesVersion"
-  compile "com.google.android.gms:play-services-location:$rootProject.playServicesVersion"
-  compile "com.google.android.gms:play-services-maps:$rootProject.playServicesVersion"
-  compile "com.jakewharton.timber:timber:$rootProject.timberVersion"
+  implementation "com.google.android.gms:play-services-places:$rootProject.playServicesVersion"
+  implementation "com.google.android.gms:play-services-location:$rootProject.playServicesVersion"
+  implementation "com.google.android.gms:play-services-maps:$rootProject.playServicesVersion"
+  implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 }
