@@ -15,14 +15,17 @@ public interface ApiService {
   String LATITUDE = "lat";
   String LONGITUDE = "lon";
   String RADIUS = "radius";
+  String SORT = "sort";
   String RESOURCE_ID = "res_id";
+  String SORT_CRITERIA_DISTANCE = "real_distance";
 
   @GET("search") Observable<Restaurants> getRestaurants(@Query("entity_id") int cityId,
       @Query("entity_type") String type, @Query("start") int startOffset,
       @Query("count") int count);
 
   @GET("search") Observable<Restaurants> getRestaurants(@Query(LATITUDE) double lat,
-      @Query(LONGITUDE) double longitude, @Query(RADIUS) double radius);
+      @Query(LONGITUDE) double longitude, @Query(RADIUS) double radius,
+      @Query(SORT) String sortParam);
 
   @GET("restaurant") Observable<RestaurantDetails> getRestaurant(
       @Query(RESOURCE_ID) String restaurantId);

@@ -1,5 +1,6 @@
 package com.bfs.mbistro.base.presenter;
 
+import com.bfs.mbistro.CollectionUtils;
 import com.bfs.mbistro.base.listener.ItemClickListener;
 import com.bfs.mbistro.base.view.MvpItemView;
 import com.bfs.mbistro.base.view.MvpItemsView;
@@ -25,8 +26,12 @@ public abstract class BaseListItemPresenter<T, IV extends MvpItemView, V extends
       this.itemsList.clear();
     }
     this.itemsList.addAll(items);
-    getView().showContent();
     getView().hideProgress();
+    if (CollectionUtils.isNotNullNorEmpty(this.itemsList)) {
+      getView().showContent();
+    } else {
+      getView().showEmptyView();
+    }
   }
 
   public abstract void onBindRowViewAtPosition(int position, IV view);

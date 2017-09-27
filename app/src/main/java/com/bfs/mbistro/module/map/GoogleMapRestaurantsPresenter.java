@@ -16,11 +16,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.bfs.mbistro.network.ApiService.SORT_CRITERIA_DISTANCE;
+
 public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presenter
     implements OnMapReadyCallback {
 
   private static final float INITIAL_ZOOM = 16;
   private static final int RADIUS_IN_METERS = 50;
+
 
   private GoogleMap googleMap;
   private CompositeSubscription compositeSubscription;
@@ -32,14 +35,13 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
     super(service, conditionsChecker);
   }
 
-  @Override void loadRestaurantsInArea(double latitude, double longitude) {
-    this.latitude = latitude;
-    this.longitude = longitude;
+  @Override void loadRestaurantsInArea(double lat, double lon) {
+    this.latitude = lat;
+    this.longitude = lon;
     if (googleMap == null) {
       scheduleLoad = true;
     } else {
-      googleMap.moveCamera(
-          CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), INITIAL_ZOOM));
+      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), INITIAL_ZOOM));
       scheduleLoad = false;
       loadItems();
     }
@@ -69,7 +71,8 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
 
   private void loadItems() {
     getView().showLoading(false);
-    compositeSubscription.add(service.getRestaurants(latitude, longitude, RADIUS_IN_METERS)
+    compositeSubscription.add(
+        service.getRestaurants(latitude, longitude, RADIUS_IN_METERS, SORT_CRITERIA_DISTANCE)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new RestaurantsMapSubscriber()));

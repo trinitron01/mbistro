@@ -60,7 +60,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
     this.itemsShown += resultsShown;
     this.itemsStartIndex = resultsStart;
     getView().setMoreItemsAvailable(
-        itemsShown < MAX_ITEMS && itemsStartIndex <= MAX_ITEMS_LAST_PAGE_INDEX);
+        itemsShown > 0 && itemsShown < MAX_ITEMS && itemsStartIndex <= MAX_ITEMS_LAST_PAGE_INDEX);
   }
 
   @Override public void loadNextItems() {
