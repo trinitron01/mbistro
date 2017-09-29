@@ -3,15 +3,15 @@ package com.bfs.mbistro.module.map;
 import android.content.Context;
 import android.content.Intent;
 
-public class AndroidMapScreenPresenter implements MapScreenPresenter {
+public class AndroidMapScreenNavigator implements MapScreenNavigator {
 
   private final Context context;
 
-  public AndroidMapScreenPresenter(Context context) {
+  public AndroidMapScreenNavigator(Context context) {
     this.context = context;
   }
 
-  @Override public void switchToMapView() {
+  @Override public void navigateToMapView() {
     context.startActivity(new Intent(context, RestaurantsMapActivity.class));
   }
 }

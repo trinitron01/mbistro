@@ -7,22 +7,22 @@ import android.view.MenuItem;
 import com.bfs.mbistro.R;
 import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.location.base.BaseLocationAwareActivity;
-import com.bfs.mbistro.module.map.AndroidMapScreenPresenter;
-import com.bfs.mbistro.module.map.MapScreenPresenter;
+import com.bfs.mbistro.module.map.AndroidMapScreenNavigator;
+import com.bfs.mbistro.module.map.MapScreenNavigator;
 import timber.log.Timber;
 
 import static com.bfs.mbistro.AndroidUtils.isFragmentAlive;
 
 public class RestaurantsActivity extends BaseLocationAwareActivity {
 
-  private MapScreenPresenter mapScreenPresenter;
+  private MapScreenNavigator mapScreenNavigator;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.restaurant_list);
     Toolbar toolbar = findView(R.id.toolbar);
     setSupportActionBar(toolbar);
-    mapScreenPresenter = new AndroidMapScreenPresenter(this);
+    mapScreenNavigator = new AndroidMapScreenNavigator(this);
   }
 
   @Override protected void inject(BistroComponent component) {
@@ -36,7 +36,7 @@ public class RestaurantsActivity extends BaseLocationAwareActivity {
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.switch_to_map) {
-      mapScreenPresenter.switchToMapView();
+      mapScreenNavigator.navigateToMapView();
     }
     return super.onOptionsItemSelected(item);
   }
