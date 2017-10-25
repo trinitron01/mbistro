@@ -2,8 +2,7 @@ package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class RestaurantLocation implements Parcelable {
 
@@ -17,15 +16,15 @@ public class RestaurantLocation implements Parcelable {
           return new RestaurantLocation[size];
         }
       };
-  @SerializedName("city_id") @Expose private Integer cityId;
-  @SerializedName("locality_verbose") @Expose private String localityVerbose;
-  @SerializedName("address") @Expose private String address;
-  @SerializedName("locality") @Expose private String locality;
-  @SerializedName("city") @Expose private String city;
-  @SerializedName("latitude") @Expose private double latitude;
-  @SerializedName("longitude") @Expose private double longitude;
-  @SerializedName("zipcode") @Expose private String zipcode;
-  @SerializedName("country_id") @Expose private String countryId;
+  @Json(name = "city_id") private Integer cityId;
+  @Json(name = "locality_verbose") private String localityVerbose;
+  @Json(name = "address") private String address;
+  @Json(name = "locality") private String locality;
+  @Json(name = "city") private String city;
+  @Json(name = "latitude") private double latitude;
+  @Json(name = "longitude") private double longitude;
+  @Json(name = "zipcode") private String zipcode;
+  @Json(name = "country_id") private String countryId;
 
   public RestaurantLocation() {
   }

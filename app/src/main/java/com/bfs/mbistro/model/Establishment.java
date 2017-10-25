@@ -1,15 +1,14 @@
 package com.bfs.mbistro.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class Establishment {
 
-    @SerializedName("id")
-    @Expose
+    @Json(name = "id")
+
     private Integer id;
-    @SerializedName("name")
-    @Expose
+    @Json(name = "name")
+
     private String name;
 
     public Integer getId() {

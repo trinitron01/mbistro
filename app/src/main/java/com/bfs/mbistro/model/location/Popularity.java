@@ -2,8 +2,7 @@ package com.bfs.mbistro.model.location;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 import java.util.List;
 
 public class Popularity implements Parcelable {
@@ -18,15 +17,15 @@ public class Popularity implements Parcelable {
           return new Popularity[size];
         }
       };
-  @SerializedName("popularity") @Expose private String popularity;
-  @SerializedName("nightlife_index") @Expose private String nightlifeIndex;
-  @SerializedName("nearby_res") @Expose private List<String> nearbyRes = null;
-  @SerializedName("top_cuisines") @Expose private List<String> topCuisines = null;
-  @SerializedName("popularity_res") @Expose private String popularityRes;
-  @SerializedName("nightlife_res") @Expose private String nightlifeRes;
-  @SerializedName("subzone") @Expose private String subzone;
-  @SerializedName("subzone_id") @Expose private Integer subzoneId;
-  @SerializedName("city") @Expose private String city;
+  @Json(name = "popularity") private String popularity;
+  @Json(name = "nightlife_index") private String nightlifeIndex;
+  @Json(name = "nearby_res") private List<String> nearbyRes = null;
+  @Json(name = "top_cuisines") private List<String> topCuisines = null;
+  @Json(name = "popularity_res") private String popularityRes;
+  @Json(name = "nightlife_res") private String nightlifeRes;
+  @Json(name = "subzone") private String subzone;
+  @Json(name = "subzone_id") private Integer subzoneId;
+  @Json(name = "city") private String city;
 
   public Popularity() {
   }

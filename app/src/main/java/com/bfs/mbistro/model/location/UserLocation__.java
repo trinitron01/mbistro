@@ -1,19 +1,18 @@
 package com.bfs.mbistro.model.location;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class UserLocation__ {
 
-  @SerializedName("address") @Expose private String address;
-  @SerializedName("locality") @Expose private String locality;
-  @SerializedName("city") @Expose private String city;
-  @SerializedName("city_id") @Expose private Integer cityId;
-  @SerializedName("latitude") @Expose private String latitude;
-  @SerializedName("longitude") @Expose private String longitude;
-  @SerializedName("zipcode") @Expose private String zipcode;
-  @SerializedName("country_id") @Expose private Integer countryId;
-  @SerializedName("locality_verbose") @Expose private String localityVerbose;
+  @Json(name = "address") private String address;
+  @Json(name = "locality") private String locality;
+  @Json(name = "city") private String city;
+  @Json(name = "city_id") private Integer cityId;
+  @Json(name = "latitude") private String latitude;
+  @Json(name = "longitude") private String longitude;
+  @Json(name = "zipcode") private String zipcode;
+  @Json(name = "country_id") private Integer countryId;
+  @Json(name = "locality_verbose") private String localityVerbose;
 
   public String getAddress() {
     return address;

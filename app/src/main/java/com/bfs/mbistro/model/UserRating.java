@@ -2,8 +2,7 @@ package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class UserRating implements Parcelable {
 
@@ -16,15 +15,15 @@ public class UserRating implements Parcelable {
       return new UserRating[size];
     }
   };
-    @SerializedName("aggregate_rating") @Expose private float aggregateRating;
-    @SerializedName("rating_text")
-    @Expose
+  @Json(name = "aggregate_rating") private float aggregateRating;
+  @Json(name = "rating_text")
+
     private String ratingText;
-    @SerializedName("rating_color")
-    @Expose
+  @Json(name = "rating_color")
+
     private String ratingColor;
-    @SerializedName("votes")
-    @Expose
+  @Json(name = "votes")
+
     private String votes;
 
     protected UserRating(Parcel in) {

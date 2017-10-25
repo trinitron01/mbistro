@@ -3,8 +3,7 @@ package com.bfs.mbistro.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.bfs.mbistro.model.base.NamedItem;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,27 +19,27 @@ public class Restaurant implements NamedItem, Parcelable {
           return new Restaurant[size];
         }
       };
-  @SerializedName("id") @Expose public String id;
-  @SerializedName("name") @Expose public String name;
-  @SerializedName("url") @Expose public String url;
-  @SerializedName("location") @Expose public RestaurantLocation location;
-  @SerializedName("switch_to_order_menu") @Expose public Integer switchToOrderMenu;
-  @SerializedName("cuisines") @Expose public String cuisines;
-  @SerializedName("average_cost_for_two") @Expose public int averageCostForTwo;
-  @SerializedName("price_range") @Expose public Integer priceRange;
-  @SerializedName("currency") @Expose public String currency;
-  @SerializedName("offers") @Expose public List<Object> offers = null;
-  @SerializedName("thumb") @Expose public String thumb;
-  @SerializedName("user_rating") @Expose public UserRating userRating;
-  @SerializedName("photos_url") @Expose public String photosUrl;
-  @SerializedName("menu_url") @Expose public String menuUrl;
-  @SerializedName("featured_image") @Expose public String featuredImage;
-  @SerializedName("has_online_delivery") @Expose public Integer hasOnlineDelivery;
-  @SerializedName("is_delivering_now") @Expose public Integer isDeliveringNow;
-  @SerializedName("deeplink") @Expose public String deeplink;
-  @SerializedName("has_table_booking") @Expose public Integer hasTableBooking;
-  @SerializedName("events_url") @Expose public String eventsUrl;
-  @SerializedName("establishment_types") @Expose public List<Object> establishmentTypes = null;
+  @Json(name = "id") public String id;
+  @Json(name = "name") public String name;
+  @Json(name = "url") public String url;
+  @Json(name = "location") public RestaurantLocation location;
+  @Json(name = "switch_to_order_menu") public Integer switchToOrderMenu;
+  @Json(name = "cuisines") public String cuisines;
+  @Json(name = "average_cost_for_two") public int averageCostForTwo;
+  @Json(name = "price_range") public Integer priceRange;
+  @Json(name = "currency") public String currency;
+  @Json(name = "offers") public List<Object> offers = null;
+  @Json(name = "thumb") public String thumb;
+  @Json(name = "user_rating") public UserRating userRating;
+  @Json(name = "photos_url") public String photosUrl;
+  @Json(name = "menu_url") public String menuUrl;
+  @Json(name = "featured_image") public String featuredImage;
+  @Json(name = "has_online_delivery") public Integer hasOnlineDelivery;
+  @Json(name = "is_delivering_now") public Integer isDeliveringNow;
+  @Json(name = "deeplink") public String deeplink;
+  @Json(name = "has_table_booking") public Integer hasTableBooking;
+  @Json(name = "events_url") public String eventsUrl;
+  @Json(name = "establishment_types") public List<Object> establishmentTypes = null;
 
   public Restaurant() {
   }

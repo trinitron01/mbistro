@@ -2,8 +2,7 @@ package com.bfs.mbistro.model.location;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 import java.util.List;
 
 public class UserLocation implements Parcelable {
@@ -18,10 +17,10 @@ public class UserLocation implements Parcelable {
           return new UserLocation[size];
         }
       };
-  @SerializedName("location") @Expose private UserLocation_ location;
-  @SerializedName("popularity") @Expose private Popularity popularity;
-  @SerializedName("link") @Expose private String link;
-  @SerializedName("nearby_restaurants") @Expose private List<NearbyRestaurant> nearbyRestaurants =
+  @Json(name = "location") private UserLocation_ location;
+  @Json(name = "popularity") private Popularity popularity;
+  @Json(name = "link") private String link;
+  @Json(name = "nearby_restaurants") private List<NearbyRestaurant> nearbyRestaurants =
       null;
 
   public UserLocation() {

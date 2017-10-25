@@ -1,12 +1,10 @@
 package com.bfs.mbistro.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class EstablishmentContainer {
 
-    @SerializedName("establishment")
-    @Expose
+    @Json(name = "establishment")
     private Establishment establishment;
 
     public Establishment getEstablishment() {

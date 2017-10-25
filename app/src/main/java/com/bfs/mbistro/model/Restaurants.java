@@ -1,22 +1,21 @@
 package com.bfs.mbistro.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 import java.util.List;
 
 public class Restaurants {
 
-    @SerializedName("results_found")
-    @Expose
+    @Json(name = "results_found")
+
     public Integer resultsFound;
-    @SerializedName("results_start")
-    @Expose
+    @Json(name = "results_start")
+
     public Integer resultsStart;
-    @SerializedName("results_shown")
-    @Expose
+    @Json(name = "results_shown")
+
     public Integer resultsShown;
-    @SerializedName("restaurants")
-    @Expose
+    @Json(name = "restaurants")
+
     public List<RestaurantContainer> restaurants = null;
 
 }

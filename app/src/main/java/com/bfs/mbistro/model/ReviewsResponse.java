@@ -2,8 +2,7 @@ package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +18,10 @@ public class ReviewsResponse implements Parcelable {
           return new ReviewsResponse[size];
         }
       };
-  @SerializedName("reviews_start") @Expose private Integer reviews_start;
-  @SerializedName("user_reviews") @Expose private List<UserReviews> user_reviews;
-  @SerializedName("reviews_shown") @Expose private Integer reviews_shown;
-  @SerializedName("reviews_count") @Expose private Integer reviews_count;
+  @Json(name = "reviews_start") private Integer reviews_start;
+  @Json(name = "user_reviews") private List<UserReviews> user_reviews;
+  @Json(name = "reviews_shown") private Integer reviews_shown;
+  @Json(name = "reviews_count") private Integer reviews_count;
 
   public ReviewsResponse() {
   }

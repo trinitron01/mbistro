@@ -3,8 +3,7 @@ package com.bfs.mbistro.model.location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.bfs.mbistro.model.Restaurant;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class NearbyRestaurant implements Parcelable {
 
@@ -18,7 +17,7 @@ public class NearbyRestaurant implements Parcelable {
           return new NearbyRestaurant[size];
         }
       };
-  @SerializedName("restaurant") @Expose private Restaurant restaurant;
+  @Json(name = "restaurant") private Restaurant restaurant;
 
   public NearbyRestaurant() {
   }

@@ -1,8 +1,8 @@
 package com.bfs.mbistro.model;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 /**
  * Awesome Pojo Generator
@@ -18,14 +18,14 @@ public class User implements Parcelable {
       return new User[size];
     }
   };
-  @SerializedName("zomato_handle") @Expose private String zomato_handle;
-  @SerializedName("profile_deeplink") @Expose private String profile_deeplink;
-  @SerializedName("profile_image") @Expose private String profile_image;
-  @SerializedName("profile_url") @Expose private String profile_url;
-  @SerializedName("foodie_color") @Expose private String foodie_color;
-  @SerializedName("name") @Expose private String name;
-  @SerializedName("foodie_level_num") @Expose private Integer foodie_level_num;
-  @SerializedName("foodie_level") @Expose private String foodie_level;
+  @Json(name = "zomato_handle") private String zomato_handle;
+  @Json(name = "profile_deeplink") private String profile_deeplink;
+  @Json(name = "profile_image") private String profile_image;
+  @Json(name = "profile_url") private String profile_url;
+  @Json(name = "foodie_color") private String foodie_color;
+  @Json(name = "name") private String name;
+  @Json(name = "foodie_level_num") private Integer foodie_level_num;
+  @Json(name = "foodie_level") private String foodie_level;
 
   public User() {
   }

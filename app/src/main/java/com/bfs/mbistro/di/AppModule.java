@@ -11,27 +11,30 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
+/**
+ * Scopes have overheads - Using scope only when necessary
+ */
 @Module public class AppModule {
 
   private final Context appContext;
 
   public AppModule(Context appContext) {
-    this.appContext = appContext;
+    this.appContext = appContext.getApplicationContext();
   }
 
-  @Provides public Context provideAppContext() {
+  @Provides @Singleton Context provideAppContext() {
     return appContext;
   }
 
-  @Provides @Singleton public CrashReportingEngine provideCrashReportingEngine(Context context) {
+  @Provides @Singleton CrashReportingEngine provideCrashReportingEngine(Context context) {
     return new FabricReportingEngine(context);
   }
 
-  @Provides @Singleton public NetworkMonitor provideNetworkMonitor(Context context) {
+  @Provides NetworkMonitor provideNetworkMonitor(Context context) {
     return new AndroidNetworkMonitor(context);
   }
 
-  @Provides @Singleton public LocationPermissionsChecker provideLocationEngine(Context context) {
+  @Provides LocationPermissionsChecker provideLocationEngine(Context context) {
     return new AndroidLocationPermissionsChecker(context);
   }
 }

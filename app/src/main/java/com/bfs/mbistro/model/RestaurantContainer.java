@@ -3,8 +3,7 @@ package com.bfs.mbistro.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.bfs.mbistro.model.base.NamedItem;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class RestaurantContainer implements NamedItem, Parcelable {
 
@@ -17,8 +16,8 @@ public class RestaurantContainer implements NamedItem, Parcelable {
       return new RestaurantContainer[size];
     }
   };
-    @SerializedName("restaurant")
-    @Expose
+  @Json(name = "restaurant")
+
     public Restaurant restaurant;
 
   private RestaurantContainer(Parcel in) {

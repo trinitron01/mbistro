@@ -2,8 +2,7 @@ package com.bfs.mbistro.model.location;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class UserLocation_ implements Parcelable {
 
@@ -17,15 +16,15 @@ public class UserLocation_ implements Parcelable {
           return new UserLocation_[size];
         }
       };
-  @SerializedName("entity_type") @Expose private String entityType;
-  @SerializedName("entity_id") @Expose private Integer entityId;
-  @SerializedName("title") @Expose private String title;
-  @SerializedName("latitude") @Expose private double latitude;
-  @SerializedName("longitude") @Expose private double longitude;
-  @SerializedName("city_id") @Expose private Integer cityId;
-  @SerializedName("city_name") @Expose private String cityName;
-  @SerializedName("country_id") @Expose private Integer countryId;
-  @SerializedName("country_name") @Expose private String countryName;
+  @Json(name = "entity_type") private String entityType;
+  @Json(name = "entity_id") private Integer entityId;
+  @Json(name = "title") private String title;
+  @Json(name = "latitude") private double latitude;
+  @Json(name = "longitude") private double longitude;
+  @Json(name = "city_id") private Integer cityId;
+  @Json(name = "city_name") private String cityName;
+  @Json(name = "country_id") private Integer countryId;
+  @Json(name = "country_name") private String countryName;
 
   public UserLocation_() {
   }

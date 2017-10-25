@@ -2,8 +2,7 @@ package com.bfs.mbistro.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 public class RestaurantDetails implements Parcelable {
 
@@ -17,26 +16,26 @@ public class RestaurantDetails implements Parcelable {
     }
   };
 
-  @SerializedName("id") @Expose private String id;
-  @SerializedName("name") @Expose private String name;
-  @SerializedName("url") @Expose private String url;
-  @SerializedName("location") @Expose private RestaurantLocation location;
-  @SerializedName("average_cost_for_two") @Expose private String averageCostForTwo;
-  @SerializedName("price_range") @Expose private String priceRange;
-  @SerializedName("currency") @Expose private String currency;
-  @SerializedName("thumb") @Expose private String thumb;
-  @SerializedName("featured_image") @Expose private String featuredImage;
-  @SerializedName("photos_url") @Expose private String photosUrl;
-  @SerializedName("menu_url") @Expose private String menuUrl;
-  @SerializedName("events_url") @Expose private String eventsUrl;
-  @SerializedName("user_rating") @Expose private UserRating userRating;
-  @SerializedName("has_online_delivery") @Expose private String hasOnlineDelivery;
-  @SerializedName("is_delivering_now") @Expose private String isDeliveringNow;
-  @SerializedName("has_table_booking") @Expose private String hasTableBooking;
-  @SerializedName("deeplink") @Expose private String deeplink;
-  @SerializedName("cuisines") @Expose private String cuisines;
-  @SerializedName("photo_count") @Expose private String photoCount;
-  @SerializedName("phone_numbers") @Expose private String phoneNumbers;
+  @Json(name = "id") private String id;
+  @Json(name = "name") private String name;
+  @Json(name = "url") private String url;
+  @Json(name = "location") private RestaurantLocation location;
+  @Json(name = "average_cost_for_two") private String averageCostForTwo;
+  @Json(name = "price_range") private String priceRange;
+  @Json(name = "currency") private String currency;
+  @Json(name = "thumb") private String thumb;
+  @Json(name = "featured_image") private String featuredImage;
+  @Json(name = "photos_url") private String photosUrl;
+  @Json(name = "menu_url") private String menuUrl;
+  @Json(name = "events_url") private String eventsUrl;
+  @Json(name = "user_rating") private UserRating userRating;
+  @Json(name = "has_online_delivery") private String hasOnlineDelivery;
+  @Json(name = "is_delivering_now") private String isDeliveringNow;
+  @Json(name = "has_table_booking") private String hasTableBooking;
+  @Json(name = "deeplink") private String deeplink;
+  @Json(name = "cuisines") private String cuisines;
+  @Json(name = "photo_count") private String photoCount;
+  @Json(name = "phone_numbers") private String phoneNumbers;
 
   private RestaurantDetails(Parcel in) {
     id = in.readString();
