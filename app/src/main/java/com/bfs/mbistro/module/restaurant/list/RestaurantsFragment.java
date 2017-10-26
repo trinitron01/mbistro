@@ -39,7 +39,7 @@ public class RestaurantsFragment extends
   }
 
   @Override public RestaurantsListContract.Presenter createPresenter() {
-    return new PaginatedRestaurantsPresenter(service, new ArrayList<RestaurantContainer>());
+    return new PaginatedRestaurantsPresenter(service, new ArrayList<>());
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

@@ -10,12 +10,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 import retrofit2.HttpException;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -56,11 +53,11 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
     compositeSubscription = new CompositeSubscription();
   }
 
-  private void updateOffset(int resultsShown, int resultsStart) {
-    this.itemsShown += resultsShown;
+  private void updateOffset(int newResults, int resultsStart) {
+    this.itemsShown += newResults;
     this.itemsStartIndex = resultsStart;
     getView().setMoreItemsAvailable(
-        itemsShown > 0 && itemsShown < MAX_ITEMS && itemsStartIndex <= MAX_ITEMS_LAST_PAGE_INDEX);
+        newResults > 0 && itemsShown < MAX_ITEMS && itemsStartIndex <= MAX_ITEMS_LAST_PAGE_INDEX);
   }
 
   @Override public void loadNextItems() {
@@ -80,17 +77,12 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
     itemsShown = 0;
     itemsStartIndex = 0;
     compositeSubscription.add(service.geocode(latitude, longitude)
-        .flatMap(new Func1<UserLocation, Observable<Restaurants>>() {
-          @Override public Observable<Restaurants> call(UserLocation geocodedLocation) {
-            return service.getRestaurants(geocodedLocation.getLocation().getCityId(),
-                ENTITY_TYPE_CITY, itemsShown, ITEMS_PAGE_LIMIT);
-          }
-        }, new Func2<UserLocation, Restaurants, Pair<UserLocation, List<RestaurantContainer>>>() {
-          @Override public Pair<UserLocation, List<RestaurantContainer>> call(
-              UserLocation geocodedUserLocation, Restaurants restaurantsResponse) {
-            updateOffset(restaurantsResponse.resultsShown, restaurantsResponse.resultsStart);
-            return new Pair<>(geocodedUserLocation, restaurantsResponse.restaurants);
-          }
+        .flatMap(
+            geocodedLocation -> service.getRestaurants(geocodedLocation.getLocation().getCityId(),
+                ENTITY_TYPE_CITY, itemsShown, ITEMS_PAGE_LIMIT),
+            (geocodedUserLocation, restaurantsResponse) -> {
+              updateOffset(restaurantsResponse.resultsShown, restaurantsResponse.resultsStart);
+              return new Pair<>(geocodedUserLocation, restaurantsResponse.restaurants);
         })
         .subscribeOn(Schedulers.io())
         .doOnSubscribe(new Action0() {
