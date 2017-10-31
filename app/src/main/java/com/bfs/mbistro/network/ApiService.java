@@ -5,10 +5,10 @@ import com.bfs.mbistro.model.RestaurantDetails;
 import com.bfs.mbistro.model.Restaurants;
 import com.bfs.mbistro.model.ReviewsResponse;
 import com.bfs.mbistro.model.location.UserLocation;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import rx.Observable;
-import rx.Single;
 
 public interface ApiService {
 

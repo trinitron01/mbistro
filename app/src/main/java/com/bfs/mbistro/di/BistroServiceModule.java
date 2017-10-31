@@ -21,7 +21,7 @@ import okhttp3.Response;
 import okhttp3.internal.platform.Platform;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
 @Module(includes = AppModule.class) public class BistroServiceModule {
@@ -41,8 +41,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
   }
 
   @Provides @Singleton Converter.Factory provideConverterFactory() {
-    Moshi moshi = new Moshi.Builder().build();
-    MoshiConverterFactory moshiConverterFactory = MoshiConverterFactory.create(moshi);
+    MoshiConverterFactory moshiConverterFactory =
+        MoshiConverterFactory.create(new Moshi.Builder().build());
     return moshiConverterFactory;
   }
 
@@ -71,8 +71,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
       OkHttpClient okHttpClient) {
     return new Retrofit.Builder().addConverterFactory(converterFactory)
         .baseUrl(baseUrl)
-        .client(okHttpClient)
-        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .client(okHttpClient).addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build();
   }
 

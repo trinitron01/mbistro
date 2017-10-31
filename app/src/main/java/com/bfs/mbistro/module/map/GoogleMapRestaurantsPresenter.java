@@ -9,12 +9,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import java.net.HttpURLConnection;
 import retrofit2.HttpException;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.bfs.mbistro.network.ApiService.SORT_CRITERIA_DISTANCE;
 
@@ -26,7 +26,7 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
 
 
   private GoogleMap googleMap;
-  private CompositeSubscription compositeSubscription;
+  private CompositeDisposable compositeDisposable;
   private boolean scheduleLoad;
   private double latitude;
   private double longitude;
@@ -49,12 +49,12 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
 
   @Override public void attachView(RestaurantsMapContract.RestaurantsMapView view) {
     super.attachView(view);
-    compositeSubscription = new CompositeSubscription();
+    compositeDisposable = new CompositeDisposable();
   }
 
   @Override public void detachView(boolean retainInstance) {
     super.detachView(retainInstance);
-    compositeSubscription.unsubscribe();
+    compositeDisposable.clear();
   }
 
   @SuppressLint("MissingPermission") @Override public void onMapReady(GoogleMap map) {
@@ -71,16 +71,16 @@ public class GoogleMapRestaurantsPresenter extends RestaurantsMapContract.Presen
 
   private void loadItems() {
     getView().showLoading(false);
-    compositeSubscription.add(
+    compositeDisposable.add(
         service.getRestaurants(latitude, longitude, RADIUS_IN_METERS, SORT_CRITERIA_DISTANCE)
         .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new RestaurantsMapSubscriber()));
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(new RestaurantsMapSubscriber()));
   }
 
-  private class RestaurantsMapSubscriber extends Subscriber<Restaurants> {
+  private class RestaurantsMapSubscriber extends DisposableObserver<Restaurants> {
 
-    @Override public void onCompleted() {
+    @Override public void onComplete() {
 
     }
 
