@@ -5,7 +5,7 @@ import com.bfs.mbistro.base.presenter.BaseListItemPresenter;
 import com.bfs.mbistro.base.view.MvpItemView;
 import com.bfs.mbistro.base.view.MvpItemsView;
 import com.bfs.mbistro.model.RestaurantContainer;
-import com.bfs.mbistro.model.location.UserLocation;
+import com.bfs.mbistro.model.location.UserLocationResponse;
 import java.util.List;
 
 public interface RestaurantsListContract {
@@ -17,7 +17,7 @@ public interface RestaurantsListContract {
 
   interface ItemsView extends MvpItemsView<RestaurantContainer> {
 
-    void showRestaurantsLocation(UserLocation userLocation);
+    void showRestaurantsLocation(UserLocationResponse userLocationResponse);
 
     void showItemsPageLoadError(Throwable error);
 

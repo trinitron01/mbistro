@@ -17,7 +17,7 @@ import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.model.Restaurant;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.RestaurantLocation;
-import com.bfs.mbistro.model.location.UserLocation;
+import com.bfs.mbistro.model.location.UserLocationResponse;
 import com.bfs.mbistro.module.restaurant.details.ui.RestaurantDetailsActivity;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract;
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class RestaurantsFragment extends
     getPresenter().loadLocationItems(currentLatitude, currentLongitude);
   }
 
-  @Override public void showRestaurantsLocation(UserLocation location) {
+  @Override public void showRestaurantsLocation(UserLocationResponse location) {
     getActivity().setTitle(location.getLocation().getTitle());
   }
 

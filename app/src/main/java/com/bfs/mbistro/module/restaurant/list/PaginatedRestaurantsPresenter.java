@@ -3,7 +3,7 @@ package com.bfs.mbistro.module.restaurant.list;
 import android.support.v4.util.Pair;
 import com.bfs.mbistro.model.RestaurantContainer;
 import com.bfs.mbistro.model.Restaurants;
-import com.bfs.mbistro.model.location.UserLocation;
+import com.bfs.mbistro.model.location.UserLocationResponse;
 import com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract;
 import com.bfs.mbistro.network.ApiService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -16,7 +16,7 @@ import java.util.List;
 import retrofit2.HttpException;
 import timber.log.Timber;
 
-class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
+public class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
 
   private static final String ENTITY_TYPE_CITY = "city";
 
@@ -30,7 +30,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
   private Integer cityId;
   private CompositeDisposable compositeDisposable;
 
-  PaginatedRestaurantsPresenter(ApiService service, List<RestaurantContainer> items) {
+  public PaginatedRestaurantsPresenter(ApiService service, List<RestaurantContainer> items) {
     super(items);
     this.service = service;
   }
@@ -116,7 +116,7 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
   }
 
   private class PairObserver
-      extends DisposableObserver<Pair<UserLocation, List<RestaurantContainer>>> {
+      extends DisposableObserver<Pair<UserLocationResponse, List<RestaurantContainer>>> {
 
     @Override protected void onStart() {
       super.onStart();
@@ -124,8 +124,8 @@ class PaginatedRestaurantsPresenter extends RestaurantsListContract.Presenter {
       getView().showLoading(false);
     }
 
-    @Override
-    public void onNext(Pair<UserLocation, List<RestaurantContainer>> locationWithRestaurants) {
+    @Override public void onNext(
+        Pair<UserLocationResponse, List<RestaurantContainer>> locationWithRestaurants) {
       RestaurantsListContract.ItemsView restaurantsView = getView();
       cityId = locationWithRestaurants.first.getLocation().getCityId();
       restaurantsView.showRestaurantsLocation(locationWithRestaurants.first);
