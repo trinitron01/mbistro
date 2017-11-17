@@ -18,33 +18,32 @@ public class RestaurantContainer implements NamedItem, Parcelable {
   };
   @Json(name = "restaurant")
 
-    public Restaurant restaurant;
+  public Restaurant restaurant;
+
+  public RestaurantContainer() {
+  }
 
   private RestaurantContainer(Parcel in) {
-        restaurant = in.readParcelable(Restaurant.class.getClassLoader());
-    }
+    restaurant = in.readParcelable(Restaurant.class.getClassLoader());
+  }
 
-    @Override
-    public String getName() {
-        return restaurant.name;
-    }
+  @Override public String getName() {
+    return restaurant.name;
+  }
 
   public Restaurant getRestaurant() {
     return restaurant;
   }
 
-  @Override
-    public String toString() {
-        return "RestaurantContainer{" + "restaurant=" + restaurant + '}';
-    }
+  @Override public String toString() {
+    return "RestaurantContainer{" + "restaurant=" + restaurant + '}';
+  }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+  @Override public int describeContents() {
+    return 0;
+  }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(restaurant, flags);
-    }
+  @Override public void writeToParcel(Parcel dest, int flags) {
+    dest.writeParcelable(restaurant, flags);
+  }
 }

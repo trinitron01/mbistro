@@ -3,7 +3,6 @@ package com.bfs.mbistro.model.location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.squareup.moshi.Json;
-import java.util.List;
 
 public class UserLocation implements Parcelable {
 
@@ -17,52 +16,85 @@ public class UserLocation implements Parcelable {
           return new UserLocation[size];
         }
       };
-  @Json(name = "location") private UserLocation_ location;
-  @Json(name = "popularity") private Popularity popularity;
-  @Json(name = "link") private String link;
-  @Json(name = "nearby_restaurants") private List<NearbyRestaurant> nearbyRestaurants =
-      null;
+  @Json(name = "entity_type") private String entityType;
+  @Json(name = "entity_id") private Integer entityId;
+  @Json(name = "title") private String title;
+  @Json(name = "latitude") private double latitude;
+  @Json(name = "longitude") private double longitude;
+  @Json(name = "city_id") private Integer cityId;
+  @Json(name = "city_name") private String cityName;
+  @Json(name = "country_id") private Integer countryId;
+  @Json(name = "country_name") private String countryName;
 
   public UserLocation() {
   }
 
   protected UserLocation(Parcel in) {
-    this.location = in.readParcelable(UserLocation_.class.getClassLoader());
-    this.popularity = in.readParcelable(Popularity.class.getClassLoader());
-    this.link = in.readString();
-    this.nearbyRestaurants = in.createTypedArrayList(NearbyRestaurant.CREATOR);
+    this.entityType = in.readString();
+    this.entityId = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.title = in.readString();
+    this.latitude = in.readDouble();
+    this.longitude = in.readDouble();
+    this.cityId = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.cityName = in.readString();
+    this.countryId = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.countryName = in.readString();
   }
 
-  public UserLocation_ getLocation() {
-    return location;
+  public String getEntityType() {
+    return entityType;
   }
 
-  public void setLocation(UserLocation_ location) {
-    this.location = location;
+  public void setEntityType(String entityType) {
+    this.entityType = entityType;
   }
 
-  public Popularity getPopularity() {
-    return popularity;
+  public Integer getEntityId() {
+    return entityId;
   }
 
-  public void setPopularity(Popularity popularity) {
-    this.popularity = popularity;
+  public void setEntityId(Integer entityId) {
+    this.entityId = entityId;
   }
 
-  public String getLink() {
-    return link;
+  public String getTitle() {
+    return title;
   }
 
-  public void setLink(String link) {
-    this.link = link;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
-  public List<NearbyRestaurant> getNearbyRestaurants() {
-    return nearbyRestaurants;
+  public Integer getCityId() {
+    return cityId;
   }
 
-  public void setNearbyRestaurants(List<NearbyRestaurant> nearbyRestaurants) {
-    this.nearbyRestaurants = nearbyRestaurants;
+  public void setCityId(Integer cityId) {
+    this.cityId = cityId;
+  }
+
+  public String getCityName() {
+    return cityName;
+  }
+
+  public void setCityName(String cityName) {
+    this.cityName = cityName;
+  }
+
+  public Integer getCountryId() {
+    return countryId;
+  }
+
+  public void setCountryId(Integer countryId) {
+    this.countryId = countryId;
+  }
+
+  public String getCountryName() {
+    return countryName;
+  }
+
+  public void setCountryName(String countryName) {
+    this.countryName = countryName;
   }
 
   @Override public int describeContents() {
@@ -70,9 +102,22 @@ public class UserLocation implements Parcelable {
   }
 
   @Override public void writeToParcel(Parcel dest, int flags) {
-    dest.writeParcelable(this.location, flags);
-    dest.writeParcelable(this.popularity, flags);
-    dest.writeString(this.link);
-    dest.writeTypedList(this.nearbyRestaurants);
+    dest.writeString(this.entityType);
+    dest.writeValue(this.entityId);
+    dest.writeString(this.title);
+    dest.writeDouble(this.latitude);
+    dest.writeDouble(this.longitude);
+    dest.writeValue(this.cityId);
+    dest.writeString(this.cityName);
+    dest.writeValue(this.countryId);
+    dest.writeString(this.countryName);
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
   }
 }

@@ -60,6 +60,9 @@ public class RestaurantDetails implements Parcelable {
     phoneNumbers = in.readString();
   }
 
+  public RestaurantDetails() {
+  }
+
   @Override public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(id);
     dest.writeString(name);

@@ -49,7 +49,7 @@ public class RestaurantsActivity extends BaseLocationAwareActivity {
     if (isFragmentAlive(restaurantsFragment)) {
       restaurantsFragment.onNewLocation(latitude, longitude);
     } else {
-      Timber.w("UserLocation changed but RestaurantsFragment is no longer alive");
+      Timber.w("UserLocationResponse changed but RestaurantsFragment is no longer alive");
     }
   }
 }

@@ -1,17 +1,12 @@
 package com.bfs.mbistro.module.restaurant.mvp;
 
 import com.bfs.mbistro.model.DetailsReviewResponse;
-import com.bfs.mbistro.model.RestaurantDetails;
-import com.bfs.mbistro.model.ReviewsResponse;
 import com.bfs.mbistro.network.ApiService;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby3.mvp.lce.MvpLceView;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public interface RestaurantDetailsContract {
 
@@ -22,7 +17,7 @@ public interface RestaurantDetailsContract {
   class Presenter extends MvpBasePresenter<RestaurantDetailsView> {
 
     private final ApiService service;
-    private Subscriber<DetailsReviewResponse> subscriber;
+    private ResponseObserver observer;
 
     public Presenter(ApiService service) {
       this.service = service;
@@ -30,45 +25,34 @@ public interface RestaurantDetailsContract {
 
     public void loadDetails(final String id) {
       getView().showLoading(false);
-      unsubscribe();
-      subscriber = new ResponseSubscriber();
+      dispose();
+      observer = new ResponseObserver();
 
-      Observable<RestaurantDetails> restaurantSource = service.getRestaurant(id);
-      restaurantSource.flatMap(new Func1<RestaurantDetails, Observable<ReviewsResponse>>() {
-        @Override public Observable<ReviewsResponse> call(RestaurantDetails restaurantDetails) {
-          return service.getReviews(restaurantDetails.getId());
-        }
-      }, new Func2<RestaurantDetails, ReviewsResponse, DetailsReviewResponse>() {
-        @Override public DetailsReviewResponse call(RestaurantDetails restaurantDetails,
-            ReviewsResponse reviewsResponse) {
-          return new DetailsReviewResponse(restaurantDetails, reviewsResponse);
-        }
-      })
+      service.getRestaurant(id)
+          .flatMap(restaurantDetails -> service.getReviews(restaurantDetails.getId()),
+              DetailsReviewResponse::new)
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(subscriber);
+          .subscribeWith(observer);
     }
 
     @Override public void detachView(boolean retainInstance) {
       super.detachView(retainInstance);
-      unsubscribe();
+      dispose();
     }
 
-    private void unsubscribe() {
-      if (subscriber != null && !subscriber.isUnsubscribed()) {
-        subscriber.unsubscribe();
-      }
-      subscriber = null;
+    private void dispose() {
+      observer = null;
     }
 
-    private class ResponseSubscriber extends Subscriber<DetailsReviewResponse> {
-
-      @Override public void onCompleted() {
-
-      }
+    private class ResponseObserver extends DisposableObserver<DetailsReviewResponse> {
 
       @Override public void onError(Throwable error) {
         getView().showError(error, false);
+      }
+
+      @Override public void onComplete() {
+
       }
 
       @Override public void onNext(DetailsReviewResponse value) {

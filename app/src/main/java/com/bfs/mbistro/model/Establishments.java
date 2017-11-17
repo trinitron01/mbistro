@@ -5,16 +5,15 @@ import java.util.List;
 
 public class Establishments {
 
-    @Json(name = "establishments")
+  @Json(name = "establishments")
 
-    private List<EstablishmentContainer> establishments = null;
+  private List<EstablishmentContainer> establishments = null;
 
-    public List<EstablishmentContainer> getEstablishments() {
-        return establishments;
-    }
+  public List<EstablishmentContainer> getEstablishments() {
+    return establishments;
+  }
 
-    public void setEstablishments(List<EstablishmentContainer> establishments) {
-        this.establishments = establishments;
-    }
-
+  public void setEstablishments(List<EstablishmentContainer> establishments) {
+    this.establishments = establishments;
+  }
 }

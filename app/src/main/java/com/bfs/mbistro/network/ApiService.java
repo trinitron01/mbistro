@@ -4,11 +4,11 @@ import com.bfs.mbistro.model.Establishments;
 import com.bfs.mbistro.model.RestaurantDetails;
 import com.bfs.mbistro.model.Restaurants;
 import com.bfs.mbistro.model.ReviewsResponse;
-import com.bfs.mbistro.model.location.UserLocation;
+import com.bfs.mbistro.model.location.UserLocationResponse;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import rx.Observable;
-import rx.Single;
 
 public interface ApiService {
 
@@ -35,6 +35,6 @@ public interface ApiService {
   @GET("establishments") Single<Establishments> getEstablishments(@Query(LATITUDE) double lat,
       @Query(LONGITUDE) double lon);
 
-  @GET("geocode") Observable<UserLocation> geocode(@Query(LATITUDE) double lat,
+  @GET("geocode") Observable<UserLocationResponse> geocode(@Query(LATITUDE) double lat,
       @Query(LONGITUDE) double lon);
 }
