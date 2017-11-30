@@ -32,11 +32,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
   private static final String REQUEST_LOG_TAG = "Request";
   private static final String RESPONSE_LOG_TAG = "Response";
   private static final String HEADER_LOG_VERSION_TAG = "version";
-  private final String baseUrl;
+  private static final String BASE_URL = "https://developers.zomato.com/api/v2.1/";
   private final File cacheDir;
   private final boolean useCache = true;
-  public BistroServiceModule(String baseUrl, File cacheDir) {
-    this.baseUrl = baseUrl;
+
+  public BistroServiceModule(File cacheDir) {
     this.cacheDir = cacheDir;
   }
 
@@ -69,13 +69,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
   @Provides @Singleton Retrofit provideRetrofit(Converter.Factory converterFactory,
       OkHttpClient okHttpClient) {
-    return new Retrofit.Builder().addConverterFactory(converterFactory)
-        .baseUrl(baseUrl)
+    return new Retrofit.Builder().addConverterFactory(converterFactory).baseUrl(BASE_URL)
         .client(okHttpClient).addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build();
   }
 
-  @Provides @Singleton ApiService provideService(Retrofit retrofit) {
+  @Provides @Singleton protected ApiService provideService(Retrofit retrofit) {
     return retrofit.create(ApiService.class);
   }
 

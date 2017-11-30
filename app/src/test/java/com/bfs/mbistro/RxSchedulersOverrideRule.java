@@ -19,12 +19,12 @@ import org.junit.runners.model.Statement;
 public class RxSchedulersOverrideRule implements TestRule {
 
   private final Function<Callable<Scheduler>, Scheduler> mRxAndroidSchedulersHook =
-      schedulerCallable -> getScheduler();
+      schedulerCallable -> trampolineScheduler();
 
   private final Function<Scheduler, Scheduler> mRxJavaImmediateScheduler =
-      scheduler -> getScheduler();
+      scheduler -> trampolineScheduler();
 
-  private static Scheduler getScheduler() {
+  private static Scheduler trampolineScheduler() {
     return Schedulers.trampoline();
   }
 
@@ -46,3 +46,4 @@ public class RxSchedulersOverrideRule implements TestRule {
     };
   }
 }
+

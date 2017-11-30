@@ -8,6 +8,8 @@ import com.bfs.mbistro.module.restaurant.mvp.RestaurantsListContract;
 import com.bfs.mbistro.network.ApiService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import java.io.IOException;
@@ -85,8 +87,16 @@ public class PaginatedRestaurantsPresenter extends RestaurantsListContract.Prese
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new PairObserver()));
+        .doOnSubscribe(new Consumer<Disposable>() {
+          @Override public void accept(Disposable disposable) throws Exception {
+            getItems().clear();
+            getView().showLoading(false);
+          }
+        })
+        .subscribeWith(new LocationItemsObserver()));
   }
+
+
 
   @Override public void detachView(boolean retainInstance) {
     super.detachView(retainInstance);
@@ -115,14 +125,9 @@ public class PaginatedRestaurantsPresenter extends RestaurantsListContract.Prese
     }
   }
 
-  private class PairObserver
+  private class LocationItemsObserver
       extends DisposableObserver<Pair<UserLocationResponse, List<RestaurantContainer>>> {
 
-    @Override protected void onStart() {
-      super.onStart();
-      getItems().clear();
-      getView().showLoading(false);
-    }
 
     @Override public void onNext(
         Pair<UserLocationResponse, List<RestaurantContainer>> locationWithRestaurants) {
