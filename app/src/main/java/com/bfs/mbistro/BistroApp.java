@@ -1,6 +1,7 @@
 package com.bfs.mbistro;
 
 import android.app.Application;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatDelegate;
 import com.bfs.mbistro.crashreporting.CrashlyticsTree;
 import com.bfs.mbistro.di.AppModule;
@@ -12,7 +13,7 @@ import timber.log.Timber;
 
 public class BistroApp extends Application {
 
-  private static final String BASE_URL = "https://developers.zomato.com/api/v2.1/";
+
   private BistroComponent component;
 
   @Override public void onCreate() {
@@ -22,7 +23,7 @@ public class BistroApp extends Application {
     File cacheDir = externalCacheDir != null ? externalCacheDir : getCacheDir();
     component = DaggerBistroComponent.builder()
         .appModule(new AppModule(this))
-        .bistroServiceModule(new BistroServiceModule(BASE_URL, cacheDir))
+        .bistroServiceModule(new BistroServiceModule(cacheDir))
         .build();
 
     if (BuildConfig.DEBUG) {
@@ -33,5 +34,9 @@ public class BistroApp extends Application {
 
   public BistroComponent getComponent() {
     return component;
+  }
+
+  @VisibleForTesting public void setComponent(BistroComponent component) {
+    this.component = component;
   }
 }
