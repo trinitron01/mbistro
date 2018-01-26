@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import com.bfs.mbistro.BistroApp;
+import com.bfs.mbistro.analytics.AnalyticsTracker;
 import com.bfs.mbistro.crashreporting.CrashReportingEngine;
 import com.bfs.mbistro.di.BistroComponent;
 import com.bfs.mbistro.network.ApiService;
@@ -17,11 +18,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   @Inject protected ApiService service;
   @Inject protected CrashReportingEngine crashReportingEngine;
+  @Inject protected AnalyticsTracker analyticsTracker;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     inject(((BistroApp) getApplication()).getComponent());
     crashReportingEngine.registerCrashReporting();
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    analyticsTracker.attach(this);
+  }
+
+  @Override protected void onPause() {
+    super.onPause();
+    analyticsTracker.detach();
   }
 
   protected abstract void inject(BistroComponent component);

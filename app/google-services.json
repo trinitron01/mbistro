@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "571173286608",
+    "firebase_url": "https://mbistro-1502357721442.firebaseio.com",
+    "project_id": "mbistro-1502357721442",
+    "storage_bucket": "mbistro-1502357721442.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571173286608:android:67e0db5cc6094638",
+        "android_client_info": {
+          "package_name": "com.bfs.mbistro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571173286608-mg0rd96lfpvln7giondhqbns7j1v44cf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bfs.mbistro",
+            "certificate_hash": "268c089efe7f181e4a8d52c1a18d1f768bc09b03"
+          }
+        },
+        {
+          "client_id": "571173286608-ktd08ldrrn8dko6fstm6oav5p5pfscrb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJaUcRlkRvtf9hgRMqCculN1MswSJHuD4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571173286608-ktd08ldrrn8dko6fstm6oav5p5pfscrb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,8 @@
 package com.bfs.mbistro.di;
 
 import android.content.Context;
+import com.bfs.mbistro.analytics.AnalyticsTracker;
+import com.bfs.mbistro.analytics.FirebaseAnalyticsTracker;
 import com.bfs.mbistro.crashreporting.CrashReportingEngine;
 import com.bfs.mbistro.crashreporting.FabricReportingEngine;
 import com.bfs.mbistro.location.AndroidLocationPermissionsChecker;
@@ -36,5 +38,9 @@ import javax.inject.Singleton;
 
   @Provides LocationPermissionsChecker provideLocationEngine(Context context) {
     return new AndroidLocationPermissionsChecker(context);
+  }
+
+  @Provides AnalyticsTracker provideAnalyticsTracker() {
+    return new FirebaseAnalyticsTracker();
   }
 }

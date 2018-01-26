@@ -10,6 +10,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+
 repositories {
   maven { url 'https://maven.fabric.io/public' }
 }
@@ -74,6 +75,7 @@ dependencies {
     exclude group: 'org.json', module: 'json'
   }
   implementation "com.google.android.gms:play-services-location:$rootProject.playServicesVersion"
+  implementation "com.google.firebase:firebase-core:$rootProject.firebaseVersion"
   implementation "com.google.android.gms:play-services-maps:$rootProject.playServicesVersion"
   implementation "com.google.android.gms:play-services-places:$rootProject.playServicesVersion"
   implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
@@ -83,6 +85,9 @@ dependencies {
   implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofitVersion"
   implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
   implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroid2Version"
+
   testCompile "junit:junit:$rootProject.junitVersion"
   testCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
 }
+
+apply plugin: 'com.google.gms.google-services'
